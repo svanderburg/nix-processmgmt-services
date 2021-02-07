@@ -1,4 +1,5 @@
-{ pkgs
+{ nix-processmgmt ? ../../nix-processmgmt
+, pkgs
 , stateDir
 , logDir
 , runtimeDir
@@ -11,7 +12,7 @@
 
 let
   constructors = import ../services-agnostic/constructors.nix {
-    inherit pkgs stateDir logDir runtimeDir cacheDir tmpDir forceDisableUserChange processManager ids;
+    inherit nix-processmgmt pkgs stateDir logDir runtimeDir cacheDir tmpDir forceDisableUserChange processManager ids;
   };
 in
 {
