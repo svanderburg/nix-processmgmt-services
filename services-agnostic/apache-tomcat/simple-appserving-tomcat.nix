@@ -22,7 +22,7 @@ let
     '';
   };
 in
-import ./tomcat.nix {
+import ./default.nix {
   inherit createManagedProcess stdenv tomcat jre stateDir runtimeDir tmpDir forceDisableUserChange commonLibs;
 } {
   inherit tomcatConfigFiles instanceName postInstall;

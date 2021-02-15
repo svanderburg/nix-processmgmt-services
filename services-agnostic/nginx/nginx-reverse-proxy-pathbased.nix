@@ -12,7 +12,7 @@ let
 
   dependencies = webapps ++ (builtins.attrValues interDependencies);
 in
-import ./nginx.nix {
+import ./default.nix {
   inherit createManagedProcess stdenv nginx stateDir forceDisableUserChange runtimeDir cacheDir;
 } {
   inherit instanceName;

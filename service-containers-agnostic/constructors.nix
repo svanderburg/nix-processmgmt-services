@@ -16,7 +16,7 @@ let
   };
 in
 {
-  simpleWebappApache = import ./simple-webapp-apache.nix {
+  simpleWebappApache = import ./apache/simple-webapp-apache.nix {
     apacheConstructorFun = constructors.simpleWebappApache;
     dysnomia = pkgs.dysnomia.override (origArgs: {
       enableApacheWebApplication = true;
@@ -24,7 +24,7 @@ in
     inherit forceDisableUserChange;
   };
 
-  simpleAppservingTomcat = import ./simple-appserving-tomcat.nix {
+  simpleAppservingTomcat = import ./apache-tomcat/simple-appserving-tomcat.nix {
     inherit stateDir;
     tomcatConstructorFun = constructors.simpleAppservingTomcat;
     dysnomia = pkgs.dysnomia.override (origArgs: {
@@ -32,23 +32,14 @@ in
     });
   };
 
-  mysql = import ./mysql.nix {
-    inherit runtimeDir;
-    mysqlConstructorFun = constructors.mysql;
+  simpleInfluxdb = import ./influxdb/simpleinfluxdb.nix {
+    influxdbConstructorFun = constructors.simpleInfluxdb;
     dysnomia = pkgs.dysnomia.override (origArgs: {
-      enableMySQLDatabase = true;
+      enableInfluxDatabase = true;
     });
   };
 
-  postgresql = import ./postgresql.nix {
-    inherit runtimeDir;
-    postgresqlConstructorFun = constructors.postgresql;
-    dysnomia = pkgs.dysnomia.override (origArgs: {
-      enablePostgreSQLDatabase = true;
-    });
-  };
-
-  simpleMongodb = import ./simplemongodb.nix {
+  simpleMongodb = import ./mongodb/simplemongodb.nix {
     inherit (pkgs) stdenv;
     mongodbConstructorFun = constructors.simpleMongodb;
     dysnomia = pkgs.dysnomia.override (origArgs: {
@@ -56,7 +47,23 @@ in
     });
   };
 
-  extendableSupervisord = import ./extendable-supervisord.nix {
+  mysql = import ./mysql {
+    inherit runtimeDir;
+    mysqlConstructorFun = constructors.mysql;
+    dysnomia = pkgs.dysnomia.override (origArgs: {
+      enableMySQLDatabase = true;
+    });
+  };
+
+  postgresql = import ./postgresql {
+    inherit runtimeDir;
+    postgresqlConstructorFun = constructors.postgresql;
+    dysnomia = pkgs.dysnomia.override (origArgs: {
+      enablePostgreSQLDatabase = true;
+    });
+  };
+
+  extendableSupervisord = import ./supervisord/extendable-supervisord.nix {
     inherit stateDir;
     inherit (pkgs) stdenv;
     supervisordConstructorFun = constructors.extendableSupervisord;
@@ -65,17 +72,10 @@ in
     });
   };
 
-  svnserve = import ./svnserve.nix {
+  svnserve = import ./svnserve {
     svnserveConstructorFun = constructors.svnserve;
     dysnomia = pkgs.dysnomia.override (origArgs: {
       enableSubversionRepository = true;
-    });
-  };
-
-  simpleInfluxdb = import ./simpleinfluxdb.nix {
-    influxdbConstructorFun = constructors.simpleInfluxdb;
-    dysnomia = pkgs.dysnomia.override (origArgs: {
-      enableInfluxDatabase = true;
     });
   };
 }

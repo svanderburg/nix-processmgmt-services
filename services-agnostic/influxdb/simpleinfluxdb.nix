@@ -1,5 +1,14 @@
 {createManagedProcess, influxdb, writeTextFile, stateDir}:
-{instanceSuffix ? "", instanceName ? "influxdb${instanceSuffix}", rpcBindIP ? "127.0.0.1", rpcPort ? 8088, httpBindIP ? "", httpPort ? 8086, extraConfig ? "", postInstall ? ""}:
+
+{ instanceSuffix ? ""
+, instanceName ? "influxdb${instanceSuffix}"
+, rpcBindIP ? "127.0.0.1"
+, rpcPort ? 8088
+, httpBindIP ? ""
+, httpPort ? 8086
+, extraConfig ? ""
+, postInstall ? ""
+}:
 
 let
   influxdbStateDir = "${stateDir}/lib/${instanceName}";
@@ -24,7 +33,7 @@ let
     '';
   };
 in
-import ./influxdb.nix {
+import ./default.nix {
   inherit createManagedProcess influxdb stateDir;
 } {
   inherit instanceName configFile postInstall;

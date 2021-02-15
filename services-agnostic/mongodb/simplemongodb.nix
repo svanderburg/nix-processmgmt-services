@@ -6,7 +6,7 @@ let
   user = instanceName;
   group = instanceName;
 in
-import ./mongodb.nix {
+import ./default.nix {
   inherit createManagedProcess mongodb runtimeDir;
 } {
   inherit instanceName postInstall;

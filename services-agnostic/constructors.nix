@@ -16,103 +16,103 @@ let
   };
 in
 {
-  apache = import ./apache.nix {
+  apache = import ./apache {
     inherit createManagedProcess cacheDir;
     inherit (pkgs) apacheHttpd;
   };
 
-  simpleWebappApache = import ./simple-webapp-apache.nix {
+  simpleWebappApache = import ./apache/simple-webapp-apache.nix {
     inherit createManagedProcess logDir cacheDir runtimeDir forceDisableUserChange;
     inherit (pkgs) stdenv runCommand apacheHttpd php writeTextFile;
   };
 
-  mysql = import ./mysql.nix {
-    inherit createManagedProcess stateDir runtimeDir forceDisableUserChange;
-    inherit (pkgs) stdenv mysql;
-  };
-
-  postgresql = import ./postgresql.nix {
-    inherit createManagedProcess stateDir runtimeDir forceDisableUserChange;
-    inherit (pkgs) stdenv postgresql su;
-  };
-
-  tomcat = import ./tomcat.nix {
+  tomcat = import ./apache-tomcat {
     inherit createManagedProcess stateDir runtimeDir tmpDir forceDisableUserChange;
     inherit (pkgs) stdenv;
     jre = pkgs.jre8;
     tomcat = pkgs.tomcat9;
   };
 
-  simpleAppservingTomcat = import ./simple-appserving-tomcat.nix {
+  simpleAppservingTomcat = import ./apache-tomcat/simple-appserving-tomcat.nix {
     inherit createManagedProcess stateDir runtimeDir tmpDir forceDisableUserChange;
     inherit (pkgs) stdenv;
     jre = pkgs.jre8;
     tomcat = pkgs.tomcat9;
   };
 
-  nginx = import ./nginx.nix {
-    inherit createManagedProcess stateDir runtimeDir cacheDir forceDisableUserChange;
-    inherit (pkgs) stdenv nginx;
+  docker = import ./docker {
+    inherit createManagedProcess;
+    inherit (pkgs) docker kmod;
   };
 
-  nginxReverseProxyHostBased = import ./nginx-reverse-proxy-hostbased.nix {
-    inherit createManagedProcess stateDir runtimeDir cacheDir forceDisableUserChange;
-    inherit (pkgs) stdenv writeTextFile nginx;
+  influxdb = import ./influxdb {
+    inherit createManagedProcess stateDir;
+    inherit (pkgs) influxdb;
   };
 
-  nginxReverseProxyPathBased = import ./nginx-reverse-proxy-pathbased.nix {
-    inherit createManagedProcess stateDir runtimeDir cacheDir forceDisableUserChange;
-    inherit (pkgs) stdenv writeTextFile nginx;
+  simpleInfluxdb = import ./influxdb/simpleinfluxdb.nix {
+    inherit createManagedProcess stateDir;
+    inherit (pkgs) influxdb writeTextFile;
   };
 
-  mongodb = import ./mongodb.nix {
+  mongodb = import ./mongodb {
     inherit createManagedProcess runtimeDir;
     inherit (pkgs) mongodb;
   };
 
-  simpleMongodb = import ./simplemongodb.nix {
+  simpleMongodb = import ./mongodb/simplemongodb.nix {
     inherit createManagedProcess runtimeDir stateDir forceDisableUserChange;
     inherit (pkgs) stdenv mongodb writeTextFile;
   };
 
-  supervisord = import ./supervisord.nix {
+  mysql = import ./mysql {
+    inherit createManagedProcess stateDir runtimeDir forceDisableUserChange;
+    inherit (pkgs) stdenv mysql;
+  };
+
+  nginx = import ./nginx {
+    inherit createManagedProcess stateDir runtimeDir cacheDir forceDisableUserChange;
+    inherit (pkgs) stdenv nginx;
+  };
+
+  nginxReverseProxyHostBased = import ./nginx/nginx-reverse-proxy-hostbased.nix {
+    inherit createManagedProcess stateDir runtimeDir cacheDir forceDisableUserChange;
+    inherit (pkgs) stdenv writeTextFile nginx;
+  };
+
+  nginxReverseProxyPathBased = import ./nginx/nginx-reverse-proxy-pathbased.nix {
+    inherit createManagedProcess stateDir runtimeDir cacheDir forceDisableUserChange;
+    inherit (pkgs) stdenv writeTextFile nginx;
+  };
+
+  openssh = import ./openssh {
+    inherit createManagedProcess stateDir runtimeDir tmpDir forceDisableUserChange;
+    inherit (pkgs) writeTextFile openssh;
+  };
+
+  postgresql = import ./postgresql {
+    inherit createManagedProcess stateDir runtimeDir forceDisableUserChange;
+    inherit (pkgs) stdenv postgresql su;
+  };
+
+  s6-svscan = import ./s6-svscan {
+    inherit createManagedProcess runtimeDir;
+    inherit (pkgs) s6;
+  };
+
+  supervisord = import ./supervisord {
     inherit createManagedProcess runtimeDir logDir;
     inherit (pkgs.pythonPackages) supervisor;
   };
 
-  extendableSupervisord = import ./extendable-supervisord.nix {
+  extendableSupervisord = import ./supervisord/extendable-supervisord.nix {
     inherit createManagedProcess stateDir runtimeDir logDir;
     inherit (pkgs) writeTextFile;
     inherit (pkgs.pythonPackages) supervisor;
   };
 
-  svnserve = import ./svnserve.nix {
+  svnserve = import ./svnserve {
     inherit createManagedProcess runtimeDir forceDisableUserChange;
     inherit (pkgs) stdenv subversion;
-  };
-
-  simpleInfluxdb = import ./simpleinfluxdb.nix {
-    inherit createManagedProcess stateDir;
-    inherit (pkgs) influxdb writeTextFile;
-  };
-
-  influxdb = import ./influxdb.nix {
-    inherit createManagedProcess stateDir;
-    inherit (pkgs) influxdb;
-  };
-
-  sshd = import ./sshd.nix {
-    inherit createManagedProcess stateDir runtimeDir tmpDir forceDisableUserChange;
-    inherit (pkgs) writeTextFile openssh;
-  };
-
-  docker = import ./docker.nix {
-    inherit createManagedProcess;
-    inherit (pkgs) docker kmod;
-  };
-
-  s6-svscan = import ./s6-svscan.nix {
-    inherit createManagedProcess runtimeDir;
-    inherit (pkgs) s6;
   };
 }

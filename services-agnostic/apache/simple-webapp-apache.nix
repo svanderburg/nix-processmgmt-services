@@ -1,5 +1,17 @@
 {createManagedProcess, stdenv, runCommand, apacheHttpd, php, writeTextFile, logDir, runtimeDir, cacheDir, forceDisableUserChange}:
-{instanceSuffix ? "", instanceName ? "httpd${instanceSuffix}", port ? 80, modules ? [], serverName ? "localhost", serverAdmin, documentRoot ? ./webapp, enablePHP ? false, enableCGI ? false, extraConfig ? "", postInstall ? ""}:
+
+{ instanceSuffix ? ""
+, instanceName ? "httpd${instanceSuffix}"
+, port ? 80
+, modules ? []
+, serverName ? "localhost"
+, serverAdmin
+, documentRoot ? ../http-server-common/webapp
+, enablePHP ? false
+, enableCGI ? false
+, extraConfig ? ""
+, postInstall ? ""
+}:
 
 let
   user = instanceName;
@@ -42,7 +54,7 @@ let
       cat ${php.phpIni} > $out
     '';
 in
-import ./apache.nix {
+import ./default.nix {
   inherit createManagedProcess apacheHttpd cacheDir;
 } {
   inherit instanceName postInstall;
