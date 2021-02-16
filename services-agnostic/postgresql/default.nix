@@ -1,5 +1,5 @@
 {createManagedProcess, stdenv, postgresql, su, stateDir, runtimeDir, forceDisableUserChange}:
-{port ? 5432, instanceSuffix ? "", instanceName ? "postgresql${instanceSuffix}", postInstall ? ""}:
+{port ? 5432, instanceSuffix ? "", instanceName ? "postgresql${instanceSuffix}", configFile ? null, postInstall ? ""}:
 
 let
   postgresqlStateDir = "${stateDir}/db/${instanceName}";
@@ -14,7 +14,7 @@ createManagedProcess rec {
   inherit instanceName user postInstall;
   path = [ postgresql su ];
   initialize = ''
-    mkdir -m0700 -p ${socketDir}
+    mkdir -m0755 -p ${socketDir}
     mkdir -m0700 -p ${dataDir}
 
     ${stdenv.lib.optionalString (!forceDisableUserChange) ''
@@ -26,10 +26,17 @@ createManagedProcess rec {
     then
         ${stdenv.lib.optionalString (!forceDisableUserChange) "su ${user} -c '"}${postgresql}/bin/initdb -D ${dataDir} --no-locale${stdenv.lib.optionalString (!forceDisableUserChange) "'"}
     fi
+
+    ${stdenv.lib.optionalString (configFile != null) ''
+      ln -sfn ${configFile} ${dataDir}/postgresql.conf
+    ''}
   '';
 
   foregroundProcess = "${postgresql}/bin/postgres";
   args = [ "-D" dataDir "-p" port "-k" socketDir ];
+  environment = {
+    PGDATA = dataDir;
+  };
 
   credentials = {
     groups = {

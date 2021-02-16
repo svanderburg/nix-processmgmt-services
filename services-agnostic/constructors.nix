@@ -95,6 +95,11 @@ in
     inherit (pkgs) stdenv postgresql su;
   };
 
+  simplePostgresql = import ./postgresql/simplepostgresql.nix {
+    inherit createManagedProcess stateDir runtimeDir forceDisableUserChange;
+    inherit (pkgs) stdenv writeTextFile postgresql su;
+  };
+
   s6-svscan = import ./s6-svscan {
     inherit createManagedProcess runtimeDir;
     inherit (pkgs) s6;

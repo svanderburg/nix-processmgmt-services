@@ -104,10 +104,10 @@ rec {
     requiresUniqueIdsFor = [ "influxdbPorts" "uids" "gids" ];
   };
 
-  sshd = rec {
-    port = ids.sshPorts.sshd or 0;
+  openssh = rec {
+    port = ids.sshPorts.openssh or 0;
 
-    pkg = constructors.sshd {
+    pkg = constructors.openssh {
       inherit port;
     };
 
