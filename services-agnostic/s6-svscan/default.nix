@@ -30,7 +30,7 @@ createManagedProcess {
 
   overrides = {
     sysvinit = {
-      runlevels = [ 3 4 5 ];
+      runlevels = [ 2 3 4 5 ];
     };
   };
 }

@@ -1,7 +1,8 @@
 {createManagedProcess, stdenv, runCommand, apacheHttpd, php, writeTextFile, logDir, runtimeDir, cacheDir, forceDisableUserChange}:
 
 { instanceSuffix ? ""
-, instanceName ? "httpd${instanceSuffix}"
+, instanceName ? "apache${instanceSuffix}"
+, dependencies ? []
 , port ? 80
 , modules ? []
 , serverName ? "localhost"
@@ -57,7 +58,7 @@ in
 import ./default.nix {
   inherit createManagedProcess apacheHttpd cacheDir;
 } {
-  inherit instanceName postInstall;
+  inherit instanceName dependencies postInstall;
   environment = stdenv.lib.optionalAttrs enablePHP {
     PHPRC = phpIni;
   };
@@ -79,7 +80,7 @@ import ./default.nix {
   '';
 
   configFile = writeTextFile {
-    name = "httpd.conf";
+    name = "apache.conf";
     text = ''
       ErrorLog "${apacheLogDir}/error_log"
       PidFile "${runtimeDir}/${instanceName}.pid"
@@ -97,9 +98,13 @@ import ./default.nix {
       ${stdenv.lib.concatMapStrings (module: ''
         LoadModule ${module}_module ${apacheHttpd}/modules/mod_${module}.so
       '') baseModules}
-      ${stdenv.lib.concatMapStrings (module: ''
-        LoadModule ${module.name}_module ${module.module}
-      '') modules}
+      ${stdenv.lib.concatMapStrings (module:
+        if builtins.isAttrs module then ''
+          LoadModule ${module.name}_module ${module.module}
+        '' else if builtins.isString module then ''
+          LoadModule ${module}_module ${apacheHttpd}/modules/mod_${module}.so
+        '' else throw "Unknown type for module!"
+      ) modules}
       ${stdenv.lib.optionalString enablePHP ''
         LoadModule php7_module ${php}/modules/libphp7.so
       ''}

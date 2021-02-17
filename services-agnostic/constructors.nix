@@ -26,6 +26,11 @@ in
     inherit (pkgs) stdenv runCommand apacheHttpd php writeTextFile;
   };
 
+  reverseProxyApache = import ./apache/reverse-proxy-apache.nix {
+    inherit createManagedProcess logDir cacheDir runtimeDir forceDisableUserChange;
+    inherit (pkgs) stdenv runCommand apacheHttpd php writeTextFile;
+  };
+
   tomcat = import ./apache-tomcat {
     inherit createManagedProcess stateDir runtimeDir tmpDir forceDisableUserChange;
     inherit (pkgs) stdenv;
