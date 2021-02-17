@@ -50,6 +50,23 @@ in
     inherit (pkgs) docker kmod;
   };
 
+  hydra-evaluator = import ./hydra/hydra-evaluator.nix {
+    inherit createManagedProcess;
+    hydra = pkgs.hydra-unstable;
+  };
+
+  hydra-queue-runner = import ./hydra/hydra-queue-runner.nix {
+    inherit (pkgs) stdenv nix;
+    inherit createManagedProcess forceDisableUserChange;
+    hydra = pkgs.hydra-unstable;
+  };
+
+  hydra-server = import ./hydra/hydra-server.nix {
+    inherit createManagedProcess stateDir forceDisableUserChange;
+    inherit (pkgs) stdenv writeTextFile postgresql su;
+    hydra = pkgs.hydra-unstable;
+  };
+
   influxdb = import ./influxdb {
     inherit createManagedProcess stateDir;
     inherit (pkgs) influxdb;
@@ -88,6 +105,11 @@ in
   nginxReverseProxyPathBased = import ./nginx/nginx-reverse-proxy-pathbased.nix {
     inherit createManagedProcess stateDir runtimeDir cacheDir forceDisableUserChange;
     inherit (pkgs) stdenv writeTextFile nginx;
+  };
+
+  nix-daemon = import ./nix-daemon {
+    inherit createManagedProcess;
+    inherit (pkgs) nix;
   };
 
   openssh = import ./openssh {
