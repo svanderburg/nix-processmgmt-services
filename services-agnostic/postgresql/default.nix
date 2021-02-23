@@ -1,5 +1,11 @@
 {createManagedProcess, stdenv, postgresql, su, stateDir, runtimeDir, forceDisableUserChange}:
-{port ? 5432, instanceSuffix ? "", instanceName ? "postgresql${instanceSuffix}", configFile ? null, postInstall ? ""}:
+
+{ port ? 5432
+, instanceSuffix ? ""
+, instanceName ? "postgresql${instanceSuffix}"
+, configFile ? null
+, postInstall ? ""
+}:
 
 let
   postgresqlStateDir = "${stateDir}/db/${instanceName}";

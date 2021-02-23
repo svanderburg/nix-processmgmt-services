@@ -1,5 +1,10 @@
 {createManagedProcess, writeTextFile, supervisor, runtimeDir, logDir, stateDir}:
-{instanceSuffix ? "", instanceName ? "supervisord${instanceSuffix}", inetHTTPServerPort ? 9001, postInstall ? ""}:
+
+{ instanceSuffix ? ""
+, instanceName ? "supervisord${instanceSuffix}"
+, inetHTTPServerPort ? 9001
+, postInstall ? ""
+}:
 
 let
   includeDir = "${stateDir}/lib/${instanceName}/conf.d";

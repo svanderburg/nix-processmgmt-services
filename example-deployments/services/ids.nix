@@ -2,12 +2,13 @@
   "ids" = {
     "gids" = {
       "apache" = 2000;
-      "influxdb" = 2001;
-      "mongodb" = 2002;
-      "mysql" = 2003;
-      "postgresql" = 2004;
-      "sshd" = 2005;
-      "tomcat" = 2006;
+      "fcron" = 2001;
+      "influxdb" = 2002;
+      "mongodb" = 2003;
+      "mysql" = 2004;
+      "openssh" = 2005;
+      "postgresql" = 2006;
+      "tomcat" = 2007;
     };
     "httpPorts" = {
       "apache" = 8080;
@@ -32,7 +33,7 @@
       "postgresql" = 5432;
     };
     "sshPorts" = {
-      "sshd" = 1222;
+      "openssh" = 1222;
     };
     "svnPorts" = {
       "svnserve" = 3690;
@@ -45,16 +46,17 @@
     };
     "uids" = {
       "apache" = 2000;
-      "influxdb" = 2001;
-      "mongodb" = 2002;
-      "mysql" = 2003;
-      "postgresql" = 2004;
-      "sshd" = 2005;
-      "tomcat" = 2006;
+      "fcron" = 2001;
+      "influxdb" = 2002;
+      "mongodb" = 2003;
+      "mysql" = 2004;
+      "openssh" = 2005;
+      "postgresql" = 2006;
+      "tomcat" = 2007;
     };
   };
   "lastAssignments" = {
-    "gids" = 2006;
+    "gids" = 2007;
     "httpPorts" = 8081;
     "httpsPorts" = 8443;
     "inetHTTPPorts" = 9001;
@@ -66,6 +68,6 @@
     "svnPorts" = 3690;
     "tomcatAJPPorts" = 8009;
     "tomcatServerPorts" = 8005;
-    "uids" = 2006;
+    "uids" = 2007;
   };
 }

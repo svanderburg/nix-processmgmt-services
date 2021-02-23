@@ -1,5 +1,10 @@
 {createManagedProcess, influxdb, stateDir}:
-{instanceSuffix ? "", instanceName ? "influxdb${instanceSuffix}", configFile, postInstall ? ""}:
+
+{ instanceSuffix ? ""
+, instanceName ? "influxdb${instanceSuffix}"
+, configFile
+, postInstall ? ""
+}:
 
 let
   user = instanceName;

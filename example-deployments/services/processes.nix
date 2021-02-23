@@ -3,6 +3,7 @@
 , stateDir ? "/var"
 , runtimeDir ? "${stateDir}/run"
 , logDir ? "${stateDir}/log"
+, spoolDir ? "${stateDir}/spool"
 , cacheDir ? "${stateDir}/cache"
 , tmpDir ? (if stateDir == "/var" then "/tmp" else "${stateDir}/tmp")
 , forceDisableUserChange ? false
@@ -13,7 +14,7 @@ let
   ids = if builtins.pathExists ./ids.nix then (import ./ids.nix).ids else {};
 
   constructors = import ../../services-agnostic/constructors.nix {
-    inherit pkgs stateDir runtimeDir logDir tmpDir cacheDir forceDisableUserChange processManager ids;
+    inherit pkgs stateDir runtimeDir logDir tmpDir cacheDir spoolDir forceDisableUserChange processManager ids;
   };
 in
 rec {
@@ -116,5 +117,11 @@ rec {
 
   docker = {
     pkg = constructors.docker;
+  };
+
+  fcron = {
+    pkg = constructors.fcron {};
+
+    requiresUniqueIdsFor = [ "uids" "gids" ];
   };
 }

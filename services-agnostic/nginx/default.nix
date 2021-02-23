@@ -1,5 +1,10 @@
 {createManagedProcess, stdenv, nginx, stateDir, runtimeDir, cacheDir, forceDisableUserChange}:
-{configFile, dependencies ? [], instanceSuffix ? "", instanceName ? "nginx${instanceSuffix}"}:
+
+{ configFile
+, dependencies ? []
+, instanceSuffix ? ""
+, instanceName ? "nginx${instanceSuffix}"
+}:
 
 let
   user = instanceName;

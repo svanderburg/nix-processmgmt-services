@@ -4,6 +4,7 @@
 , logDir
 , runtimeDir
 , cacheDir
+, spoolDir
 , tmpDir
 , forceDisableUserChange
 , processManager
@@ -48,6 +49,11 @@ in
   docker = import ./docker {
     inherit createManagedProcess;
     inherit (pkgs) docker kmod;
+  };
+
+  fcron = import ./fcron {
+    inherit createManagedProcess stateDir spoolDir runtimeDir tmpDir forceDisableUserChange;
+    inherit (pkgs) writeTextFile fcron;
   };
 
   hydra-evaluator = import ./hydra/hydra-evaluator.nix {

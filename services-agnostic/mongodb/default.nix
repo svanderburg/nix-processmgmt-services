@@ -1,5 +1,11 @@
 {createManagedProcess, mongodb, runtimeDir}:
-{instanceSuffix ? "", instanceName ? "mongodb${instanceSuffix}", configFile, initialize ? "", postInstall ? ""}:
+
+{ instanceSuffix ? ""
+, instanceName ? "mongodb${instanceSuffix}"
+, configFile
+, initialize ? ""
+, postInstall ? ""
+}:
 
 let
   user = instanceName;

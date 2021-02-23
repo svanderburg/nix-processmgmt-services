@@ -1,5 +1,11 @@
 {createManagedProcess, stdenv, writeTextFile, mongodb, runtimeDir, stateDir, forceDisableUserChange}:
-{instanceSuffix ? "", instanceName ? "mongodb${instanceSuffix}", bindIP ? "127.0.0.1", port ? 27017, postInstall ? ""}:
+
+{ instanceSuffix ? ""
+, instanceName ? "mongodb${instanceSuffix}"
+, bindIP ? "127.0.0.1"
+, port ? 27017
+, postInstall ? ""
+}:
 
 let
   mongodbDir = "${stateDir}/db/${instanceName}";

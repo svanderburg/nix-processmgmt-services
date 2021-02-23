@@ -1,5 +1,10 @@
 {createManagedProcess, writeTextFile, openssh, stateDir, runtimeDir, tmpDir, forceDisableUserChange}:
-{instanceSuffix ? "", instanceName ? "sshd${instanceSuffix}", port ? 22, extraSSHDConfig ? ""}:
+
+{ instanceSuffix ? ""
+, instanceName ? "sshd${instanceSuffix}"
+, port ? 22
+, extraSSHDConfig ? ""
+}:
 
 let
   sshdStateDir = "${stateDir}/lib/${instanceName}";

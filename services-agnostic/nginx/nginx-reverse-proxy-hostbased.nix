@@ -1,5 +1,11 @@
 {createManagedProcess, stdenv, writeTextFile, nginx, runtimeDir, stateDir, cacheDir, forceDisableUserChange}:
-{port ? 80, webapps ? [], instanceSuffix ? "", instanceName ? "nginx${instanceSuffix}"}:
+
+{ port ? 80
+, webapps ? []
+, instanceSuffix ? ""
+, instanceName ? "nginx${instanceSuffix}"
+}:
+
 interDependencies:
 
 let

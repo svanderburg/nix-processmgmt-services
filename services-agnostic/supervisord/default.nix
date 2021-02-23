@@ -1,5 +1,11 @@
 {createManagedProcess, supervisor, runtimeDir, logDir}:
-{instanceSuffix ? "", instanceName ? "supervisord${instanceSuffix}", initialize ? "", configFile, postInstall ? ""}:
+
+{ instanceSuffix ? ""
+, instanceName ? "supervisord${instanceSuffix}"
+, initialize ? ""
+, configFile
+, postInstall ? ""
+}:
 
 let
   pidFile = "${runtimeDir}/${instanceName}.pid";
@@ -18,7 +24,7 @@ createManagedProcess {
 
   overrides = {
     sysvinit = {
-      runlevels = [ 3 4 5 ];
+      runlevels = [ 2 3 4 5 ];
     };
   };
 }
