@@ -46,6 +46,16 @@ in
     tomcat = pkgs.tomcat9;
   };
 
+  dbus-daemon = import ./dbus-daemon {
+    inherit createManagedProcess stateDir runtimeDir;
+    inherit (pkgs) stdenv dbus writeTextFile;
+  };
+
+  disnix-service = import ./disnix-service {
+    inherit createManagedProcess;
+    inherit (pkgs) stdenv disnix nix;
+  };
+
   docker = import ./docker {
     inherit createManagedProcess;
     inherit (pkgs) docker kmod;

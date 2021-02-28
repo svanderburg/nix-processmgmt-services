@@ -4,6 +4,7 @@
 , logDir
 , runtimeDir
 , cacheDir
+, spoolDir
 , tmpDir
 , forceDisableUserChange
 , processManager
@@ -12,7 +13,7 @@
 
 let
   constructors = import ../services-agnostic/constructors.nix {
-    inherit nix-processmgmt pkgs stateDir logDir runtimeDir cacheDir tmpDir forceDisableUserChange processManager ids;
+    inherit nix-processmgmt pkgs stateDir logDir runtimeDir cacheDir spoolDir tmpDir forceDisableUserChange processManager ids;
   };
 in
 {
