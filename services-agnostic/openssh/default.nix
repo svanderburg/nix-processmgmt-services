@@ -1,7 +1,7 @@
 {createManagedProcess, writeTextFile, openssh, stateDir, runtimeDir, tmpDir, forceDisableUserChange}:
 
 { instanceSuffix ? ""
-, instanceName ? "sshd${instanceSuffix}"
+, instanceName ? "openssh${instanceSuffix}"
 , port ? 22
 , extraSSHDConfig ? ""
 }:
@@ -17,6 +17,9 @@ let
       HostKey ${sshdStateDir}/ssh_host_ed25519_key
 
       PidFile ${if forceDisableUserChange then tmpDir else runtimeDir}/${instanceName}.pid
+
+      Subsystem       sftp    ${openssh}/libexec/sftp-server
+
       ${extraSSHDConfig}
     '';
   };

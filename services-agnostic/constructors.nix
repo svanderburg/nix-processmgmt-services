@@ -24,7 +24,7 @@ in
 
   simpleWebappApache = import ./apache/simple-webapp-apache.nix {
     inherit createManagedProcess logDir cacheDir runtimeDir forceDisableUserChange;
-    inherit (pkgs) stdenv runCommand apacheHttpd php writeTextFile;
+    inherit (pkgs) lib runCommand apacheHttpd php writeTextFile;
   };
 
   reverseProxyApache = import ./apache/reverse-proxy-apache.nix {
@@ -34,7 +34,7 @@ in
 
   tomcat = import ./apache-tomcat {
     inherit createManagedProcess stateDir runtimeDir tmpDir forceDisableUserChange;
-    inherit (pkgs) stdenv;
+    inherit (pkgs) lib;
     jre = pkgs.jre8;
     tomcat = pkgs.tomcat9;
   };
@@ -48,12 +48,12 @@ in
 
   dbus-daemon = import ./dbus-daemon {
     inherit createManagedProcess stateDir runtimeDir;
-    inherit (pkgs) stdenv dbus writeTextFile;
+    inherit (pkgs) lib dbus writeTextFile;
   };
 
   disnix-service = import ./disnix-service {
     inherit createManagedProcess;
-    inherit (pkgs) stdenv disnix nix;
+    inherit (pkgs) lib nix disnix dysnomia;
   };
 
   docker = import ./docker {
@@ -72,14 +72,14 @@ in
   };
 
   hydra-queue-runner = import ./hydra/hydra-queue-runner.nix {
-    inherit (pkgs) stdenv nix;
+    inherit (pkgs) lib nix;
     inherit createManagedProcess forceDisableUserChange;
     hydra = pkgs.hydra-unstable;
   };
 
   hydra-server = import ./hydra/hydra-server.nix {
     inherit createManagedProcess stateDir forceDisableUserChange;
-    inherit (pkgs) stdenv writeTextFile postgresql su;
+    inherit (pkgs) lib writeTextFile postgresql su;
     hydra = pkgs.hydra-unstable;
   };
 
@@ -100,27 +100,27 @@ in
 
   simpleMongodb = import ./mongodb/simplemongodb.nix {
     inherit createManagedProcess runtimeDir stateDir forceDisableUserChange;
-    inherit (pkgs) stdenv mongodb writeTextFile;
+    inherit (pkgs) lib mongodb writeTextFile;
   };
 
   mysql = import ./mysql {
     inherit createManagedProcess stateDir runtimeDir forceDisableUserChange;
-    inherit (pkgs) stdenv mysql;
+    inherit (pkgs) lib mysql;
   };
 
   nginx = import ./nginx {
     inherit createManagedProcess stateDir runtimeDir cacheDir forceDisableUserChange;
-    inherit (pkgs) stdenv nginx;
+    inherit (pkgs) lib nginx;
   };
 
   nginxReverseProxyHostBased = import ./nginx/nginx-reverse-proxy-hostbased.nix {
     inherit createManagedProcess stateDir runtimeDir cacheDir forceDisableUserChange;
-    inherit (pkgs) stdenv writeTextFile nginx;
+    inherit (pkgs) stdenv lib writeTextFile nginx;
   };
 
   nginxReverseProxyPathBased = import ./nginx/nginx-reverse-proxy-pathbased.nix {
     inherit createManagedProcess stateDir runtimeDir cacheDir forceDisableUserChange;
-    inherit (pkgs) stdenv writeTextFile nginx;
+    inherit (pkgs) stdenv lib writeTextFile nginx;
   };
 
   nix-daemon = import ./nix-daemon {
@@ -135,12 +135,12 @@ in
 
   postgresql = import ./postgresql {
     inherit createManagedProcess stateDir runtimeDir forceDisableUserChange;
-    inherit (pkgs) stdenv postgresql su;
+    inherit (pkgs) lib postgresql su;
   };
 
   simplePostgresql = import ./postgresql/simplepostgresql.nix {
     inherit createManagedProcess stateDir runtimeDir forceDisableUserChange;
-    inherit (pkgs) stdenv writeTextFile postgresql su;
+    inherit (pkgs) lib writeTextFile postgresql su;
   };
 
   s6-svscan = import ./s6-svscan {
@@ -161,6 +161,6 @@ in
 
   svnserve = import ./svnserve {
     inherit createManagedProcess runtimeDir forceDisableUserChange;
-    inherit (pkgs) stdenv subversion;
+    inherit (pkgs) lib subversion;
   };
 }

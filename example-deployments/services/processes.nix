@@ -110,6 +110,9 @@ rec {
 
     pkg = constructors.openssh {
       inherit port;
+      extraSSHDConfig = ''
+        UsePAM yes
+      '';
     };
 
     requiresUniqueIdsFor = [ "sshPorts" "uids" "gids" ];

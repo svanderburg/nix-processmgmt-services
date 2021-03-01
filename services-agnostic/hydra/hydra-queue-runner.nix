@@ -1,4 +1,4 @@
-{createManagedProcess, stdenv, hydra, nix, forceDisableUserChange}:
+{createManagedProcess, lib, hydra, nix, forceDisableUserChange}:
 {nix-daemon, hydra-server, user ? null}:
 
 # TODO: execStopPost: /bin/hydra-queue-runner --unlock
@@ -22,7 +22,7 @@ createManagedProcess {
   initialize = ''
     mkdir -m 0700 -p ${queueRunnerBaseDir}
     mkdir -m 0750 -p ${hydra-server.baseDir}/build-logs
-    ${stdenv.lib.optionalString (!forceDisableUserChange) ''
+    ${lib.optionalString (!forceDisableUserChange) ''
       chown ${user}:${hydra-server.hydraGroup} ${queueRunnerBaseDir} ${hydra-server.baseDir}/build-logs
     ''}
   '';

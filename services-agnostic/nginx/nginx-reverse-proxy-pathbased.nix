@@ -1,4 +1,4 @@
-{createManagedProcess, stdenv, writeTextFile, nginx, runtimeDir, stateDir, cacheDir, forceDisableUserChange}:
+{createManagedProcess, stdenv, lib, writeTextFile, nginx, runtimeDir, stateDir, cacheDir, forceDisableUserChange}:
 
 { port ? 80
 , webapps ? []
@@ -20,7 +20,7 @@ let
   dependencies = webapps ++ (builtins.attrValues interDependencies);
 in
 import ./default.nix {
-  inherit createManagedProcess stdenv nginx stateDir forceDisableUserChange runtimeDir cacheDir;
+  inherit createManagedProcess lib nginx stateDir forceDisableUserChange runtimeDir cacheDir;
 } {
   inherit instanceName;
 
@@ -33,7 +33,7 @@ import ./default.nix {
       pid ${runtimeDir}/${instanceName}.pid;
       error_log ${nginxLogDir}/error.log;
 
-      ${stdenv.lib.optionalString (!forceDisableUserChange) ''
+      ${lib.optionalString (!forceDisableUserChange) ''
         user ${user} ${group};
       ''}
 
@@ -51,20 +51,20 @@ import ./default.nix {
         uwsgi_temp_path ${nginxCacheDir}/uwsgi;
         scgi_temp_path ${nginxCacheDir}/scgi;
 
-        ${stdenv.lib.optionalString enableCache ''
-          ${stdenv.lib.concatMapStrings (dependency:
+        ${lib.optionalString enableCache ''
+          ${lib.concatMapStrings (dependency:
             ''
               proxy_cache_path ${nginxCacheDir}/${dependency.name} keys_zone=${dependency.name}:8m inactive=5m max_size=128m;
             ''
           ) dependencies}
         ''}
 
-        ${stdenv.lib.concatMapStrings (dependency:
+        ${lib.concatMapStrings (dependency:
           ''
             upstream ${dependency.name} {
               ip_hash;
               ${if dependency ? targets
-                then stdenv.lib.concatMapStrings (target: "server ${target.properties.hostname}:${toString dependency.port};\n") dependency.targets
+                then lib.concatMapStrings (target: "server ${target.properties.hostname}:${toString dependency.port};\n") dependency.targets
                 else "server localhost:${dependency.port};\n"
               }
             }
@@ -72,11 +72,11 @@ import ./default.nix {
         ) dependencies}
 
         server {
-          ${stdenv.lib.concatMapStrings (dependency:
+          ${lib.concatMapStrings (dependency:
             ''
               location ${dependency.baseURL} {
                 proxy_pass        http://${dependency.name};
-                ${stdenv.lib.optionalString enableCache ''
+                ${lib.optionalString enableCache ''
                   proxy_cache       ${dependency.name};
                   proxy_cache_key   $host$uri$is_args$args;
                   proxy_cache_valid 200 5m;

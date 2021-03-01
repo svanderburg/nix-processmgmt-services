@@ -1,4 +1,4 @@
-{createManagedProcess, stdenv, writeTextFile, hydra, postgresql, su, stateDir, forceDisableUserChange}:
+{createManagedProcess, lib, writeTextFile, hydra, postgresql, su, stateDir, forceDisableUserChange}:
 
 { instanceSuffix ? ""
 , instanceName ? "hydra-server${instanceSuffix}"
@@ -32,7 +32,7 @@ let
       notification_sender = ${notificationSender}
       max_servers = 25
       compress_num_threads = 0
-      ${stdenv.lib.optionalString (logo != null) ''
+      ${lib.optionalString (logo != null) ''
         hydra_logo = ${logo}
       ''}
       gc_roots_dir = ${gcRootsDir}
@@ -52,14 +52,14 @@ createManagedProcess {
     mkdir -m 0700 -p ${baseDir}/www
     mkdir -p ${gcRootsDir}
 
-    ${stdenv.lib.optionalString (!forceDisableUserChange) ''
+    ${lib.optionalString (!forceDisableUserChange) ''
       chown ${user}:${hydraGroup} ${baseDir}/www
       chown ${hydraUser}:${hydraGroup} ${gcRootsDir}
     ''}
 
     chmod 2775 ${gcRootsDir}
 
-    ${stdenv.lib.optionalString (postgresqlDBMS != null) ''
+    ${lib.optionalString (postgresqlDBMS != null) ''
       if [ ! -e ${baseDir}/.db-created ]
       then
           count=1
@@ -70,9 +70,9 @@ createManagedProcess {
               ((count++))
           done
 
-          ${stdenv.lib.optionalString (!forceDisableUserChange) "su ${postgresqlDBMS.postgresqlUsername} -c '"}createuser ${hydraUser}${stdenv.lib.optionalString (!forceDisableUserChange) "'"}
-          ${stdenv.lib.optionalString (!forceDisableUserChange) "su ${postgresqlDBMS.postgresqlUsername} -c '"}createdb -O ${hydraUser} ${hydraDatabase}${stdenv.lib.optionalString (!forceDisableUserChange) "'"}
-          echo "create extension if not exists pg_trgm" | ${stdenv.lib.optionalString (!forceDisableUserChange) "su ${postgresqlDBMS.postgresqlUsername} -c '"}psql ${hydraDatabase}${stdenv.lib.optionalString (!forceDisableUserChange) "'"}
+          ${lib.optionalString (!forceDisableUserChange) "su ${postgresqlDBMS.postgresqlUsername} -c '"}createuser ${hydraUser}${lib.optionalString (!forceDisableUserChange) "'"}
+          ${lib.optionalString (!forceDisableUserChange) "su ${postgresqlDBMS.postgresqlUsername} -c '"}createdb -O ${hydraUser} ${hydraDatabase}${lib.optionalString (!forceDisableUserChange) "'"}
+          echo "create extension if not exists pg_trgm" | ${lib.optionalString (!forceDisableUserChange) "su ${postgresqlDBMS.postgresqlUsername} -c '"}psql ${hydraDatabase}${lib.optionalString (!forceDisableUserChange) "'"}
           touch ${baseDir}/.db-created
       fi
     ''}
@@ -86,7 +86,7 @@ createManagedProcess {
     inherit baseDir dbi hydraDatabase hydraUser;
   };
 
-  dependencies = [ nix-daemon.pkg ] ++ stdenv.lib.optional (postgresqlDBMS != null) postgresqlDBMS.pkg;
+  dependencies = [ nix-daemon.pkg ] ++ lib.optional (postgresqlDBMS != null) postgresqlDBMS.pkg;
 
   credentials = {
     groups = {

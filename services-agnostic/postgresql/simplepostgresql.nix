@@ -1,4 +1,4 @@
-{createManagedProcess, stdenv, writeTextFile, postgresql, su, stateDir, runtimeDir, forceDisableUserChange}:
+{createManagedProcess, lib, writeTextFile, postgresql, su, stateDir, runtimeDir, forceDisableUserChange}:
 
 { port ? 5432
 , instanceSuffix ? ""
@@ -31,26 +31,26 @@ let
   toConfigValue = value:
     if true == value then "yes"
     else if false == value then "no"
-    else if builtins.isString value then "'${stdenv.lib.replaceStrings ["'"] ["''"] value}'"
+    else if builtins.isString value then "'${lib.replaceStrings ["'"] ["''"] value}'"
     else toString value;
 in
 import ./default.nix {
-  inherit createManagedProcess stdenv postgresql su stateDir runtimeDir forceDisableUserChange;
+  inherit createManagedProcess lib postgresql su stateDir runtimeDir forceDisableUserChange;
 } {
   inherit port instanceSuffix instanceName postInstall;
   configFile = writeTextFile {
     name = "";
     text =
-      stdenv.lib.optionalString (authentication != null) ''
+      lib.optionalString (authentication != null) ''
         hba_file = '${hbaFile}'
       ''
-      + stdenv.lib.optionalString (identMap != null) ''
+      + lib.optionalString (identMap != null) ''
         ident_file = '${identFile}'
       ''
       + ''
         listen_addresses = '${if enableTCPIP then "*" else "localhost"}'
       ''
-      + stdenv.lib.concatMapStrings (name:
+      + lib.concatMapStrings (name:
         let
           value = builtins.getAttr name settings;
         in

@@ -1,4 +1,4 @@
-{mongodbConstructorFun, stdenv, dysnomia}:
+{mongodbConstructorFun, lib, dysnomia}:
 
 { instanceSuffix ? "", instanceName ? "mongodb${instanceSuffix}"
 , containerName ? "mongo-database${instanceSuffix}"
@@ -18,8 +18,8 @@ let
       mkdir -p $out/etc/dysnomia/containers
       cat > $out/etc/dysnomia/containers/${containerName} <<EOF
       mongoPort=${toString port}
-      ${stdenv.lib.optionalString (mongoDumpArgs != null) (toString mongoDumpArgs)}
-      ${stdenv.lib.optionalString (mongoRestoreArgs != null) (toString mongoRestoreArgs)}
+      ${lib.optionalString (mongoDumpArgs != null) (toString mongoDumpArgs)}
+      ${lib.optionalString (mongoRestoreArgs != null) (toString mongoRestoreArgs)}
       EOF
 
       # Copy the Dysnomia module that manages a Mongo database

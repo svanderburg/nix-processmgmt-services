@@ -1,4 +1,4 @@
-{createManagedProcess, stdenv, runCommand, apacheHttpd, php, writeTextFile, logDir, runtimeDir, cacheDir, forceDisableUserChange}:
+{createManagedProcess, lib, runCommand, apacheHttpd, php, writeTextFile, logDir, runtimeDir, cacheDir, forceDisableUserChange}:
 
 { instanceSuffix ? ""
 , instanceName ? "apache${instanceSuffix}"
@@ -42,7 +42,7 @@ let
     "alias"
     "dir"
   ]
-  ++ stdenv.lib.optional enableCGI "cgi";
+  ++ lib.optional enableCGI "cgi";
 
   apacheLogDir = "${logDir}/${instanceName}";
 
@@ -59,21 +59,21 @@ import ./default.nix {
   inherit createManagedProcess apacheHttpd cacheDir;
 } {
   inherit instanceName dependencies postInstall;
-  environment = stdenv.lib.optionalAttrs enablePHP {
+  environment = lib.optionalAttrs enablePHP {
     PHPRC = phpIni;
   };
 
   initialize = ''
     mkdir -m0700 -p ${apacheLogDir}
 
-    ${stdenv.lib.optionalString (!forceDisableUserChange) ''
+    ${lib.optionalString (!forceDisableUserChange) ''
       chown ${user}:${group} ${apacheLogDir}
     ''}
 
     if [ ! -e "${documentRoot}" ]
     then
         mkdir -p "${documentRoot}"
-        ${stdenv.lib.optionalString (!forceDisableUserChange) ''
+        ${lib.optionalString (!forceDisableUserChange) ''
           chown ${user}:${group} ${documentRoot}
         ''}
     fi
@@ -85,7 +85,7 @@ import ./default.nix {
       ErrorLog "${apacheLogDir}/error_log"
       PidFile "${runtimeDir}/${instanceName}.pid"
 
-      ${stdenv.lib.optionalString (!forceDisableUserChange) ''
+      ${lib.optionalString (!forceDisableUserChange) ''
         User ${user}
         Group ${group}
       ''}
@@ -95,17 +95,17 @@ import ./default.nix {
 
       Listen ${toString port}
 
-      ${stdenv.lib.concatMapStrings (module: ''
+      ${lib.concatMapStrings (module: ''
         LoadModule ${module}_module ${apacheHttpd}/modules/mod_${module}.so
       '') baseModules}
-      ${stdenv.lib.concatMapStrings (module:
+      ${lib.concatMapStrings (module:
         if builtins.isAttrs module then ''
           LoadModule ${module.name}_module ${module.module}
         '' else if builtins.isString module then ''
           LoadModule ${module}_module ${apacheHttpd}/modules/mod_${module}.so
         '' else throw "Unknown type for module!"
       ) modules}
-      ${stdenv.lib.optionalString enablePHP ''
+      ${lib.optionalString enablePHP ''
         LoadModule php7_module ${php}/modules/libphp7.so
       ''}
 
@@ -113,7 +113,7 @@ import ./default.nix {
 
       DocumentRoot "${documentRoot}"
 
-      ${stdenv.lib.optionalString enablePHP ''
+      ${lib.optionalString enablePHP ''
         <FilesMatch \.php$>
           SetHandler application/x-httpd-php
         </FilesMatch>

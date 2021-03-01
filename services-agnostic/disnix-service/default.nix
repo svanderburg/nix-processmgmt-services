@@ -1,4 +1,4 @@
-{createManagedProcess, stdenv, disnix, nix}:
+{createManagedProcess, lib, nix, disnix, dysnomia}:
 {dbus-daemon ? null}:
 
 let
@@ -7,9 +7,9 @@ in
 createManagedProcess {
   name = "disnix-service";
   process = "${disnix}/bin/disnix-service";
-  path = [ nix ];
+  path = [ nix dysnomia disnix ];
   daemonExtraArgs = [ "--daemon" ];
-  dependencies = stdenv.lib.optional (dbus-daemon != null) dbus-daemon.pkg;
+  dependencies = lib.optional (dbus-daemon != null) dbus-daemon.pkg;
 
   credentials = {
     groups = {

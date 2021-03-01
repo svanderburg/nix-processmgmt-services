@@ -1,4 +1,4 @@
-{createManagedProcess, stdenv, writeTextFile, mongodb, runtimeDir, stateDir, forceDisableUserChange}:
+{createManagedProcess, lib, writeTextFile, mongodb, runtimeDir, stateDir, forceDisableUserChange}:
 
 { instanceSuffix ? ""
 , instanceName ? "mongodb${instanceSuffix}"
@@ -27,7 +27,7 @@ import ./default.nix {
   };
   initialize = ''
     mkdir -p ${mongodbDir}
-    ${stdenv.lib.optionalString (!forceDisableUserChange) ''
+    ${lib.optionalString (!forceDisableUserChange) ''
       chown ${user}:${group} ${mongodbDir}
     ''}
   '';

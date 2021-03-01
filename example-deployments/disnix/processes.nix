@@ -17,7 +17,11 @@ let
 in
 rec {
   openssh = rec {
-    pkg = constructors.openssh {};
+    pkg = constructors.openssh {
+      extraSSHDConfig = ''
+        UsePAM yes
+      '';
+    };
   };
 
   dbus-daemon = {

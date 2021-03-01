@@ -1,4 +1,4 @@
-{createManagedProcess, stdenv, subversion, runtimeDir, forceDisableUserChange}:
+{createManagedProcess, lib, subversion, runtimeDir, forceDisableUserChange}:
 
 { instanceSuffix ? ""
 , instanceName ? "svnserve${instanceSuffix}"
@@ -16,7 +16,7 @@ createManagedProcess {
   inherit instanceName postInstall;
   initialize = ''
     mkdir -p ${svnBaseDir}
-    ${stdenv.lib.optionalString (!forceDisableUserChange) ''
+    ${lib.optionalString (!forceDisableUserChange) ''
       chgrp ${svnGroup} ${svnBaseDir}
     ''}
   '';

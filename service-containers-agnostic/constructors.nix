@@ -41,7 +41,7 @@ in
   };
 
   simpleMongodb = import ./mongodb/simplemongodb.nix {
-    inherit (pkgs) stdenv;
+    inherit (pkgs) lib;
     mongodbConstructorFun = constructors.simpleMongodb;
     dysnomia = pkgs.dysnomia.override (origArgs: {
       enableMongoDatabase = true;

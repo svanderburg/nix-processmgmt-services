@@ -1,4 +1,4 @@
-{createManagedProcess, stdenv, postgresql, su, stateDir, runtimeDir, forceDisableUserChange}:
+{createManagedProcess, lib, postgresql, su, stateDir, runtimeDir, forceDisableUserChange}:
 
 { port ? 5432
 , instanceSuffix ? ""
@@ -23,17 +23,17 @@ createManagedProcess rec {
     mkdir -m0755 -p ${socketDir}
     mkdir -m0700 -p ${dataDir}
 
-    ${stdenv.lib.optionalString (!forceDisableUserChange) ''
+    ${lib.optionalString (!forceDisableUserChange) ''
       chown ${user}:${group} ${socketDir}
       chown ${user}:${group} ${dataDir}
     ''}
 
     if [ ! -e "${dataDir}/PG_VERSION" ]
     then
-        ${stdenv.lib.optionalString (!forceDisableUserChange) "su ${user} -c '"}${postgresql}/bin/initdb -D ${dataDir} --no-locale${stdenv.lib.optionalString (!forceDisableUserChange) "'"}
+        ${lib.optionalString (!forceDisableUserChange) "su ${user} -c '"}${postgresql}/bin/initdb -D ${dataDir} --no-locale${lib.optionalString (!forceDisableUserChange) "'"}
     fi
 
-    ${stdenv.lib.optionalString (configFile != null) ''
+    ${lib.optionalString (configFile != null) ''
       ln -sfn ${configFile} ${dataDir}/postgresql.conf
     ''}
   '';

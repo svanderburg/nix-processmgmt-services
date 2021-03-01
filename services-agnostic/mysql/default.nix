@@ -1,4 +1,4 @@
-{createManagedProcess, stdenv, mysql, stateDir, runtimeDir, forceDisableUserChange}:
+{createManagedProcess, lib, mysql, stateDir, runtimeDir, forceDisableUserChange}:
 
 { port ? 3306
 , instanceSuffix ? ""
@@ -32,7 +32,7 @@ createManagedProcess {
     mkdir -m0700 -p ${dataDir}
     mkdir -m0700 -p ${instanceRuntimeDir}
 
-    ${stdenv.lib.optionalString (!forceDisableUserChange) ''
+    ${lib.optionalString (!forceDisableUserChange) ''
       chown ${user}:${group} ${dataDir}
       chown ${user}:${group} ${instanceRuntimeDir}
     ''}
@@ -45,7 +45,7 @@ createManagedProcess {
 
   foregroundProcess = "${mysql}/bin/mysqld";
   foregroundProcessArgs = [ "--basedir" mysql "--datadir" dataDir "--port" port "--socket" "${instanceRuntimeDir}/mysqld.sock" ]
-    ++ stdenv.lib.optionals (!forceDisableUserChange) [ "--user" user ];
+    ++ lib.optionals (!forceDisableUserChange) [ "--user" user ];
 
   credentials = {
     groups = {

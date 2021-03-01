@@ -1,4 +1,4 @@
-{createManagedProcess, stdenv, tomcat, jre, stateDir, runtimeDir, tmpDir, forceDisableUserChange, commonLibs ? []}:
+{createManagedProcess, lib, tomcat, jre, stateDir, runtimeDir, tmpDir, forceDisableUserChange, commonLibs ? []}:
 {instanceSuffix ? "", instanceName ? "tomcat${instanceSuffix}", tomcatConfigFiles, postInstall ? ""}:
 
 let
@@ -49,7 +49,7 @@ createManagedProcess rec {
             fi
         done
 
-        ${stdenv.lib.optionalString (!forceDisableUserChange) ''
+        ${lib.optionalString (!forceDisableUserChange) ''
           chown -R ${user}:${group} ${baseDir}
         ''}
     fi
