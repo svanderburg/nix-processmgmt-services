@@ -16,8 +16,8 @@ let
   };
 in
 rec {
-  openssh = rec {
-    pkg = constructors.openssh {
+  sshd = rec {
+    pkg = constructors.sshd {
       extraSSHDConfig = ''
         UsePAM yes
       '';

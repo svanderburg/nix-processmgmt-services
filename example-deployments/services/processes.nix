@@ -105,10 +105,10 @@ rec {
     requiresUniqueIdsFor = [ "influxdbPorts" "uids" "gids" ];
   };
 
-  openssh = rec {
-    port = ids.sshPorts.openssh or 0;
+  sshd = rec {
+    port = ids.sshPorts.sshd or 0;
 
-    pkg = constructors.openssh {
+    pkg = constructors.sshd {
       inherit port;
       extraSSHDConfig = ''
         UsePAM yes

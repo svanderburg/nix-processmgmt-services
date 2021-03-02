@@ -6,8 +6,8 @@
       "influxdb" = 2002;
       "mongodb" = 2003;
       "mysql" = 2004;
-      "openssh" = 2005;
-      "postgresql" = 2006;
+      "postgresql" = 2005;
+      "sshd" = 2006;
       "tomcat" = 2007;
     };
     "httpPorts" = {
@@ -33,7 +33,7 @@
       "postgresql" = 5432;
     };
     "sshPorts" = {
-      "openssh" = 1222;
+      "sshd" = 1222;
     };
     "svnPorts" = {
       "svnserve" = 3690;
@@ -50,8 +50,8 @@
       "influxdb" = 2002;
       "mongodb" = 2003;
       "mysql" = 2004;
-      "openssh" = 2005;
-      "postgresql" = 2006;
+      "postgresql" = 2005;
+      "sshd" = 2006;
       "tomcat" = 2007;
     };
   };

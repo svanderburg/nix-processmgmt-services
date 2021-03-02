@@ -1,7 +1,8 @@
 {createManagedProcess, writeTextFile, openssh, stateDir, runtimeDir, tmpDir, forceDisableUserChange}:
 
 { instanceSuffix ? ""
-, instanceName ? "openssh${instanceSuffix}"
+# The service is called sshd, and not openssh, because it relies on a hardcoded assumption that the privilege separation user is named sshd
+, instanceName ? "sshd${instanceSuffix}"
 , port ? 22
 , extraSSHDConfig ? ""
 }:

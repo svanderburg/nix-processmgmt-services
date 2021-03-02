@@ -52,8 +52,8 @@ in
   };
 
   disnix-service = import ./disnix-service {
-    inherit createManagedProcess;
-    inherit (pkgs) lib nix disnix dysnomia;
+    inherit createManagedProcess processManager nix-processmgmt;
+    inherit (pkgs) stdenv lib writeTextFile nix disnix dysnomia inetutils;
   };
 
   docker = import ./docker {
@@ -128,7 +128,7 @@ in
     inherit (pkgs) nix;
   };
 
-  openssh = import ./openssh {
+  sshd = import ./sshd {
     inherit createManagedProcess stateDir runtimeDir tmpDir forceDisableUserChange;
     inherit (pkgs) writeTextFile openssh;
   };
