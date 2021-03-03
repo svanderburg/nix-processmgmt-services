@@ -1,10 +1,10 @@
-{supervisordConstructorFun, stdenv, dysnomia, stateDir}:
+{supervisordConstructorFun, lib, dysnomia, stateDir}:
 
 { instanceSuffix ? "", instanceName ? "supervisord${instanceSuffix}"
 , containerName ? "supervisord-program${instanceSuffix}"
 , inetHTTPServerPort ? 9001
 , postInstall ? ""
-, type
+, type ? null
 , properties ? {}
 }:
 
@@ -28,6 +28,8 @@ let
 in
 {
   name = instanceName;
-  inherit pkg type supervisordTargetDir;
+  inherit pkg supervisordTargetDir;
   providesContainer = containerName;
+} // lib.optionalAttrs (type != null) {
+  inherit type;
 } // properties

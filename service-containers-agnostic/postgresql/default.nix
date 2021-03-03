@@ -1,9 +1,9 @@
-{postgresqlConstructorFun, dysnomia, runtimeDir}:
+{postgresqlConstructorFun, lib, dysnomia, runtimeDir}:
 
 { instanceSuffix ? "", instanceName ? "postgresql${instanceSuffix}"
 , containerName ? "postgresql-database${instanceSuffix}"
 , port ? 5432
-, type
+, type ? null
 , properties ? {}
 }:
 
@@ -32,7 +32,9 @@ rec {
   postgresqlPort = port;
   postgresqlUsername = username;
 
-  inherit pkg type;
+  inherit pkg;
 
   providesContainer = containerName;
+} // lib.optionalAttrs (type != null) {
+  inherit type;
 } // properties

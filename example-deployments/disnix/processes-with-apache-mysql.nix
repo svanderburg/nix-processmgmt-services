@@ -14,9 +14,13 @@ let
   constructors = import ../../services-agnostic/constructors.nix {
     inherit pkgs stateDir runtimeDir logDir tmpDir cacheDir spoolDir forceDisableUserChange processManager;
   };
+
+  containerProviderConstructors = import ../../service-containers-agnostic/constructors.nix {
+    inherit pkgs stateDir runtimeDir logDir tmpDir cacheDir spoolDir forceDisableUserChange processManager;
+  };
 in
 rec {
-  sshd = rec {
+  sshd = {
     pkg = constructors.sshd {
       extraSSHDConfig = ''
         UsePAM yes
@@ -30,9 +34,18 @@ rec {
     };
   };
 
+  apache = containerProviderConstructors.simpleWebappApache {
+    serverAdmin = "root@localhost";
+    documentRoot = "/var/www";
+    enablePHP = true;
+  };
+
+  mysql = containerProviderConstructors.mysql {};
+
   disnix-service = {
     pkg = constructors.disnix-service {
       inherit dbus-daemon;
+      containerProviders = [ apache mysql ];
     };
   };
 }

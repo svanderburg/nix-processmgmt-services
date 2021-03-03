@@ -1,16 +1,16 @@
-{apacheConstructorFun, dysnomia, forceDisableUserChange}:
+{apacheConstructorFun, lib, dysnomia, forceDisableUserChange}:
 
 { instanceSuffix ? "", instanceName ? "apache${instanceSuffix}"
 , containerName ? "apache-webapplication${instanceSuffix}"
 , port ? 80
 , modules ? [], serverName ? "localhost"
 , serverAdmin
-, documentRoot ? ./webapp
+, documentRoot ? ../../services-agnostic/http-server-common/webapp
 , extraConfig ? ""
 , enableCGI ? false
 , enablePHP ? false
 , filesetOwner ? null
-, type
+, type ? null
 , properties ? {}
 }:
 
@@ -33,8 +33,10 @@ let
 in
 {
   name = instanceName;
-  inherit pkg type port documentRoot;
+  inherit pkg port documentRoot;
   providesContainer = containerName;
+} // lib.optionalAttrs (type != null) {
+  inherit type;
 } // (if forceDisableUserChange || filesetOwner == null then {} else {
   inherit filesetOwner;
 }) // properties

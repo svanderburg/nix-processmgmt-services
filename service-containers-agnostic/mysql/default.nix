@@ -1,9 +1,9 @@
-{mysqlConstructorFun, dysnomia, runtimeDir}:
+{mysqlConstructorFun, lib, dysnomia, runtimeDir}:
 
 { instanceSuffix ? "", instanceName ? "mysql${instanceSuffix}"
 , port ? 3306
 , containerName ? "mysql-database${instanceSuffix}"
-, type
+, type ? null
 , properties ? {}
 }:
 
@@ -44,7 +44,9 @@ rec {
   name = instanceName;
   mysqlPort = port;
 
-  inherit pkg type mysqlSocket mysqlUsername;
+  inherit pkg mysqlSocket mysqlUsername;
 
   providesContainer = containerName;
+} // lib.optionalAttrs (type != null) {
+  inherit type;
 } // properties

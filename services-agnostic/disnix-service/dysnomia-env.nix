@@ -1,4 +1,15 @@
-{stdenv, lib, writeTextFile, nix-processmgmt, processManager, dysnomiaProperties, dysnomiaContainers, processManagerContainerSettings}:
+{ stdenv
+, lib
+, writeTextFile
+, nix-processmgmt
+
+, processManager
+, dysnomiaProperties
+, dysnomiaContainers
+, containerProviders
+, extraDysnomiaContainersPath
+, processManagerContainerSettings
+}:
 
 let
   # Take some default system properties, override them with the specified Dysnomia properties
@@ -22,7 +33,7 @@ let
     text = printProperties _dysnomiaProperties;
   };
 
-  # For process manager that manages the disnix-serivce, expose it as a container
+  # For process managers that manages the disnix-service, expose it as a container
   processManagerDysnomiaModule = import "${nix-processmgmt}/nixproc/derive-dysnomia-process-type.nix" {
     inherit processManager;
   };
@@ -42,6 +53,10 @@ let
     process = {};
     wrapper = {};
   } // processManagerContainer) dysnomiaContainers;
+
+  containerProvidersContainerPath = map (containerProvider: "${containerProvider.pkg}/etc/dysnomia/containers") containerProviders;
+
+  containerProvidersModulesPath = map (containerProvider: "${containerProvider.pkg}/libexec/dysnomia") containerProviders;
 
   # Generate container configuration files
   containersDir = stdenv.mkDerivation {
@@ -66,5 +81,6 @@ let
 in
 {
   DYSNOMIA_PROPERTIES = dysnomiaPropertiesFile;
-  DYSNOMIA_CONTAINERS_PATH = containersDir;
+  DYSNOMIA_CONTAINERS_PATH = builtins.concatStringsSep ":" ([containersDir] ++ containerProvidersContainerPath ++ extraDysnomiaContainersPath);
+  DYSNOMIA_MODULES_PATH = builtins.concatStringsSep ":" containerProvidersModulesPath;
 }

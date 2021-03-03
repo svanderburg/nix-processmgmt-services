@@ -6,7 +6,7 @@
 , port ? 27017
 , mongoDumpArgs ? null
 , mongoRestoreArgs ? null
-, type
+, type ? null
 , properties ? {}
 }:
 
@@ -30,9 +30,11 @@ let
 in
 {
   name = instanceName;
-  inherit pkg type bindIP port;
+  inherit pkg bindIP port;
   mongoPort = port;
   providesContainer = containerName;
+} // lib.optionalAttrs (type != null) {
+  inherit type;
 } // (if mongoDumpArgs == null then {} else {
   inherit mongoDumpArgs;
 }) // (if mongoRestoreArgs == null then {} else {

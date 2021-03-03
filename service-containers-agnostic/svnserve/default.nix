@@ -1,11 +1,11 @@
-{svnserveConstructorFun, dysnomia}:
+{svnserveConstructorFun, lib, dysnomia}:
 
 { instanceSuffix ? "", instanceName ? "svnserve${instanceSuffix}"
 , containerName ? "subversion-repository${instanceSuffix}"
 , port ? 3690
 , svnBaseDir
 , svnGroup ? "root"
-, type
+, type ? null
 , properties ? {}
 }:
 
@@ -28,6 +28,8 @@ let
 in
 {
   name = instanceName;
-  inherit pkg type svnGroup svnBaseDir;
+  inherit pkg svnGroup svnBaseDir;
   providesContainer = containerName;
+} // lib.optionalAttrs (type != null) {
+  inherit type;
 } // properties

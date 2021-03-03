@@ -23,10 +23,12 @@ in
       enableApacheWebApplication = true;
     });
     inherit forceDisableUserChange;
+    inherit (pkgs) lib;
   };
 
   simpleAppservingTomcat = import ./apache-tomcat/simple-appserving-tomcat.nix {
     inherit stateDir;
+    inherit (pkgs) lib;
     tomcatConstructorFun = constructors.simpleAppservingTomcat;
     dysnomia = pkgs.dysnomia.override (origArgs: {
       enableTomcatWebApplication = true;
@@ -38,6 +40,7 @@ in
     dysnomia = pkgs.dysnomia.override (origArgs: {
       enableInfluxDatabase = true;
     });
+    inherit (pkgs) lib;
   };
 
   simpleMongodb = import ./mongodb/simplemongodb.nix {
@@ -49,6 +52,7 @@ in
   };
 
   mysql = import ./mysql {
+    inherit (pkgs) lib;
     inherit runtimeDir;
     mysqlConstructorFun = constructors.mysql;
     dysnomia = pkgs.dysnomia.override (origArgs: {
@@ -58,6 +62,7 @@ in
 
   postgresql = import ./postgresql {
     inherit runtimeDir;
+    inherit (pkgs) lib;
     postgresqlConstructorFun = constructors.postgresql;
     dysnomia = pkgs.dysnomia.override (origArgs: {
       enablePostgreSQLDatabase = true;
@@ -66,7 +71,7 @@ in
 
   extendableSupervisord = import ./supervisord/extendable-supervisord.nix {
     inherit stateDir;
-    inherit (pkgs) stdenv;
+    inherit (pkgs) lib;
     supervisordConstructorFun = constructors.extendableSupervisord;
     dysnomia = pkgs.dysnomia.override (origArgs: {
       enableSupervisordProgram = true;
@@ -74,6 +79,7 @@ in
   };
 
   svnserve = import ./svnserve {
+    inherit (pkgs) lib;
     svnserveConstructorFun = constructors.svnserve;
     dysnomia = pkgs.dysnomia.override (origArgs: {
       enableSubversionRepository = true;

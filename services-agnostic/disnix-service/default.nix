@@ -3,6 +3,8 @@
 { dbus-daemon ? null
 , dysnomiaProperties ? {}
 , dysnomiaContainers ? {}
+, containerProviders ? []
+, extraDysnomiaContainersPath ? []
 , processManagerContainerSettings ? {}
 }:
 
@@ -21,10 +23,11 @@ createManagedProcess {
   process = "${disnix}/bin/disnix-service";
   path = [ nix dysnomiaPkg disnix inetutils ];
   environment = import ./dysnomia-env.nix {
-    inherit stdenv lib writeTextFile nix-processmgmt processManager dysnomiaProperties dysnomiaContainers processManagerContainerSettings;
+    inherit stdenv lib writeTextFile nix-processmgmt processManager dysnomiaProperties dysnomiaContainers containerProviders extraDysnomiaContainersPath processManagerContainerSettings;
   };
   daemonExtraArgs = [ "--daemon" ];
-  dependencies = lib.optional (dbus-daemon != null) dbus-daemon.pkg;
+  dependencies = lib.optional (dbus-daemon != null) dbus-daemon.pkg
+    ++ map (containerProvider: containerProvider.pkg) containerProviders;
 
   credentials = {
     groups = {

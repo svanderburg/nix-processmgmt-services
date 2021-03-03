@@ -1,4 +1,4 @@
-{tomcatConstructorFun, dysnomia, stateDir}:
+{tomcatConstructorFun, lib, dysnomia, stateDir}:
 
 { instanceSuffix ? ""
 , instanceName ? "tomcat${instanceSuffix}"
@@ -6,7 +6,7 @@
 , serverPort ? 8005
 , httpPort ? 8080, httpsPort ? 8443, ajpPort ? 8009
 , commonLibs ? []
-, type
+, type ? null
 , properties ? {}
 }:
 
@@ -33,8 +33,10 @@ in
 rec {
   name = instanceName;
 
-  inherit pkg type catalinaBaseDir;
+  inherit pkg catalinaBaseDir;
   tomcatPort = httpPort;
 
   providesContainer = containerName;
+} // lib.optionalAttrs (type != null) {
+  inherit type;
 } // properties
