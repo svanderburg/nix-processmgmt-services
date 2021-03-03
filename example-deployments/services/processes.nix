@@ -123,7 +123,13 @@ rec {
   };
 
   fcron = {
-    pkg = constructors.fcron {};
+    pkg = constructors.declarativeFcron {
+      fcrontabPerUser = {
+        systab = ''
+          @ 1 echo hello >> /tmp/hello
+        '';
+      };
+    };
 
     requiresUniqueIdsFor = [ "uids" "gids" ];
   };

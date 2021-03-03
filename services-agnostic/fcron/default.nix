@@ -1,5 +1,5 @@
-{createManagedProcess, writeTextFile, fcron, stateDir, runtimeDir, tmpDir, spoolDir, forceDisableUserChange}:
-{instanceSuffix ? "", instanceName ? "fcron${instanceSuffix}"}:
+{createManagedProcess, writeTextFile, lib, fcron, stateDir, runtimeDir, tmpDir, spoolDir, forceDisableUserChange}:
+{instanceSuffix ? "", instanceName ? "fcron${instanceSuffix}", initialize ? ""}:
 
 let
   fcronSpoolDir = "${spoolDir}/${instanceName}";
@@ -24,11 +24,19 @@ in
 createManagedProcess {
   name = instanceName;
   inherit instanceName;
+
   initialize = ''
-    mkdir -p ${fcronSpoolDir}
+    mkdir -p ${fcronEtcDir}
+    cp ${configFile} ${fcronEtcDir}/fcron.conf
+    chmod 644 ${fcronEtcDir}/fcron.conf
+    ${lib.optionalString (!forceDisableUserChange) ''
+      chown root:${group} ${fcronEtcDir}/fcron.conf
+    ''}
+    ${initialize}
   '';
+
   process = "${fcron}/bin/fcron";
-  args = [ "--configfile" configFile ];
+  args = [ "--configfile" "${fcronEtcDir}/fcron.conf" ];
   foregroundProcessExtraArgs = [ "--foreground" "--nosyslog" ];
   daemonExtraArgs = [ "--background" ];
 
@@ -39,6 +47,8 @@ createManagedProcess {
     users = {
       "${user}" = {
         inherit group;
+        homeDir = fcronSpoolDir;
+        createHomeDir = true;
         description = "Fcron user";
       };
     };

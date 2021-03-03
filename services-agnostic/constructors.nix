@@ -63,7 +63,12 @@ in
 
   fcron = import ./fcron {
     inherit createManagedProcess stateDir spoolDir runtimeDir tmpDir forceDisableUserChange;
-    inherit (pkgs) writeTextFile fcron;
+    inherit (pkgs) lib writeTextFile fcron;
+  };
+
+  declarativeFcron = import ./fcron/declarative.nix {
+    inherit createManagedProcess stateDir spoolDir runtimeDir tmpDir forceDisableUserChange;
+    inherit (pkgs) lib writeTextFile fcron;
   };
 
   hydra-evaluator = import ./hydra/hydra-evaluator.nix {
