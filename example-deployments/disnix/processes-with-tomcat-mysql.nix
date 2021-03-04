@@ -38,6 +38,16 @@ rec {
     webapps = [
       pkgs.tomcat9.webapps # Include the Tomcat example and management applications
     ];
+    enableAJP = true;
+  };
+
+  apache = {
+    pkg = constructors.reverseProxyApache {
+      dependency = tomcat;
+      serverAdmin = "admin@localhost";
+      targetProtocol = "ajp";
+      portPropertyName = "ajpPort";
+    };
   };
 
   mysql = containerProviderConstructors.mysql {};

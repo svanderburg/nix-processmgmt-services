@@ -11,6 +11,7 @@
 , commonLibs ? []
 , sharedLibs ? []
 , webapps ? [ tomcat.webapps ]
+, enableAJP ? false
 , postInstall ? ""
 }:
 
@@ -28,8 +29,13 @@ let
         -e 's|<Server port="8005" shutdown="SHUTDOWN">|<Server port="${toString serverPort}" shutdown="SHUTDOWN">|' \
         -e 's|<Connector port="8080" protocol="HTTP/1.1"|<Connector port="${toString httpPort}" protocol="HTTP/1.1"|' \
         -e 's|redirectPort="8443"|redirectPort="${toString httpsPort}"|' \
-        -e 's|<Connector port="8009" protocol="AJP/1.3"|<Connector port="${toString ajpPort}" protocol="AJP/1.3"|' \
         conf/server.xml
+
+      ${lib.optionalString enableAJP ''
+        sed -i \
+          -e '/<Service name="Catalina">/a <Connector protocol="AJP/1.3" address="127.0.0.1" port="${toString ajpPort}" redirectPort="8443" secretRequired="false" />' \
+          conf/server.xml
+      ''}
 
       # Create a modified catalina.properties file
       # Change all references from CATALINA_HOME to CATALINA_BASE to support loading files from our mutable state directory

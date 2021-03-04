@@ -29,7 +29,7 @@ in
 
   reverseProxyApache = import ./apache/reverse-proxy-apache.nix {
     inherit createManagedProcess logDir cacheDir runtimeDir forceDisableUserChange;
-    inherit (pkgs) stdenv runCommand apacheHttpd php writeTextFile;
+    inherit (pkgs) stdenv lib runCommand apacheHttpd php writeTextFile;
   };
 
   tomcat = import ./apache-tomcat {

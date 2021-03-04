@@ -10,6 +10,7 @@
 , commonLibs ? []
 , sharedLibs ? []
 , webapps ? [ tomcat.webapps ]
+, enableAJP ? false
 , type ? null
 , properties ? {}
 }:
@@ -18,7 +19,7 @@ let
   catalinaBaseDir = "${stateDir}/${instanceName}";
 
   pkg = tomcatConstructorFun {
-    inherit instanceName serverPort httpPort httpsPort ajpPort javaOpts catalinaOpts commonLibs sharedLibs webapps;
+    inherit instanceName serverPort httpPort httpsPort ajpPort javaOpts catalinaOpts commonLibs sharedLibs webapps enableAJP;
 
     postInstall = ''
       # Add Dysnomia container configuration file for a Tomcat web application
@@ -26,6 +27,7 @@ let
       cat > $out/etc/dysnomia/containers/${containerName} <<EOF
       tomcatPort=${toString httpPort}
       catalinaBaseDir=${catalinaBaseDir}
+      ${lib.optionalString enableAJP "ajpPort=${toString ajpPort}"}
       EOF
 
       # Copy the Dysnomia module that manages MySQL database
@@ -37,7 +39,7 @@ in
 rec {
   name = instanceName;
 
-  inherit pkg catalinaBaseDir;
+  inherit pkg catalinaBaseDir ajpPort;
   tomcatPort = httpPort;
 
   providesContainer = containerName;

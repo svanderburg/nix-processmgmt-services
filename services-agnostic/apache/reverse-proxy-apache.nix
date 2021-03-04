@@ -1,4 +1,4 @@
-{createManagedProcess, stdenv, runCommand, apacheHttpd, php, writeTextFile, logDir, runtimeDir, cacheDir, forceDisableUserChange}:
+{createManagedProcess, stdenv, lib, runCommand, apacheHttpd, php, writeTextFile, logDir, runtimeDir, cacheDir, forceDisableUserChange}:
 
 { instanceSuffix ? ""
 , instanceName ? "apache${instanceSuffix}"
@@ -8,13 +8,15 @@
 , documentRoot ? ../http-server-common/webapp
 , enablePHP ? false
 , enableCGI ? false
+, targetProtocol ? "http"
+, portPropertyName ? "port"
 , dependency
 , extraConfig ? ""
 , postInstall ? ""
 }:
 
 import ./simple-webapp-apache.nix {
-  inherit createManagedProcess stdenv runCommand apacheHttpd php writeTextFile logDir runtimeDir cacheDir forceDisableUserChange;
+  inherit createManagedProcess lib runCommand apacheHttpd php writeTextFile logDir runtimeDir cacheDir forceDisableUserChange;
 } {
   inherit instanceSuffix instanceName port serverName serverAdmin documentRoot enablePHP enableCGI postInstall;
   dependencies = [ dependency.pkg ];
@@ -49,8 +51,8 @@ import ./simple-webapp-apache.nix {
     ProxyPreserveHost On
     ProxyPass         /apache-errors !
     ErrorDocument 503 /apache-errors/503.html
-    ProxyPass         /       http://127.0.0.1:${toString dependency.port}/ retry=5 disablereuse=on
-    ProxyPassReverse  /       http://127.0.0.1:${toString dependency.port}/
+    ProxyPass         /       ${targetProtocol}://127.0.0.1:${toString dependency.${portPropertyName}}/ retry=5 disablereuse=on
+    ProxyPassReverse  /       ${targetProtocol}://127.0.0.1:${toString dependency.${portPropertyName}}/
     ${extraConfig}
   '';
 }
