@@ -1,11 +1,15 @@
-{tomcatConstructorFun, lib, dysnomia, stateDir}:
+{tomcatConstructorFun, lib, tomcat, dysnomia, stateDir}:
 
 { instanceSuffix ? ""
 , instanceName ? "tomcat${instanceSuffix}"
 , containerName ? "tomcat-webapplication${instanceSuffix}"
 , serverPort ? 8005
 , httpPort ? 8080, httpsPort ? 8443, ajpPort ? 8009
+, javaOpts ? ""
+, catalinaOpts ? ""
 , commonLibs ? []
+, sharedLibs ? []
+, webapps ? [ tomcat.webapps ]
 , type ? null
 , properties ? {}
 }:
@@ -14,7 +18,7 @@ let
   catalinaBaseDir = "${stateDir}/${instanceName}";
 
   pkg = tomcatConstructorFun {
-    inherit instanceName serverPort httpPort httpsPort ajpPort commonLibs;
+    inherit instanceName serverPort httpPort httpsPort ajpPort javaOpts catalinaOpts commonLibs sharedLibs webapps;
 
     postInstall = ''
       # Add Dysnomia container configuration file for a Tomcat web application

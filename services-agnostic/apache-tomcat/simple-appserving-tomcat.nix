@@ -1,4 +1,4 @@
-{createManagedProcess, stdenv, tomcat, jre, stateDir, runtimeDir, tmpDir, forceDisableUserChange}:
+{createManagedProcess, stdenv, lib, tomcat, jre, stateDir, runtimeDir, tmpDir, forceDisableUserChange}:
 
 { instanceSuffix ? ""
 , instanceName ? "tomcat${instanceSuffix}"
@@ -6,7 +6,11 @@
 , httpPort ? 8080
 , httpsPort ? 8443
 , ajpPort ? 8009
+, javaOpts ? ""
+, catalinaOpts ? ""
 , commonLibs ? []
+, sharedLibs ? []
+, webapps ? [ tomcat.webapps ]
 , postInstall ? ""
 }:
 
@@ -17,6 +21,7 @@ let
       mkdir -p $out
       cd $out
 
+      # Generate Tomcat configuration
       mkdir conf
       cp ${tomcat}/conf/* conf
       sed -i \
@@ -26,13 +31,64 @@ let
         -e 's|<Connector port="8009" protocol="AJP/1.3"|<Connector port="${toString ajpPort}" protocol="AJP/1.3"|' \
         conf/server.xml
 
-      mkdir webapps
-      cp -av ${tomcat.webapps}/webapps/* webapps
+      # Create a modified catalina.properties file
+      # Change all references from CATALINA_HOME to CATALINA_BASE to support loading files from our mutable state directory
+      # and add support for shared libraries
+      chmod 644 conf/catalina.properties
+      sed -i \
+          -e 's|''${catalina.home}|''${catalina.base}|g' \
+          -e 's|shared.loader=|shared.loader=''${catalina.base}/shared/lib/*.jar|' \
+        conf/catalina.properties
+
+      # Symlink all shared libraries
+      ${lib.optionalString (sharedLibs != []) ''
+        mkdir -p shared/lib
+
+        for i in ${toString sharedLibs}
+        do
+            if [ -f "$i" ]
+            then
+                ln -sfn "$i" shared/lib
+            elif [ -d "$i" ]
+            then
+                for j in $i/shared/lib/*
+                do
+                    ln -sfn $i/shared/lib/$(basename "$j") shared/lib
+                done
+            fi
+        done
+      ''}
+
+      # Symlink all configured webapps
+      mkdir -p webapps
+      for i in ${toString webapps}
+      do
+          if [ -f "$i" ]
+          then
+              ln -sfn "$i" webapps
+          elif [ -d "$i" ]
+          then
+              for j in $i/webapps/*
+              do
+                  ln -sfn $i/webapps/$(basename "$j") webapps
+
+                  # Also symlink the configuration files if they are included
+                  if [ -d $i/conf/Catalina ]
+                  then
+                      for j in $i/conf/Catalina/*
+                      do
+                          mkdir -p $out/conf/Catalina/localhost
+                          ln -sfn $j $out/conf/Catalina/localhost/`basename $j`
+                      done
+                  fi
+              done
+          fi
+      done
     '';
   };
 in
 import ./default.nix {
-  inherit createManagedProcess stdenv tomcat jre stateDir runtimeDir tmpDir forceDisableUserChange commonLibs;
+  inherit createManagedProcess lib tomcat jre stateDir runtimeDir tmpDir forceDisableUserChange;
 } {
-  inherit tomcatConfigFiles instanceName postInstall;
+  inherit tomcatConfigFiles instanceName javaOpts catalinaOpts commonLibs postInstall;
 }

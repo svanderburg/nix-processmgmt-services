@@ -1,4 +1,4 @@
-{createManagedProcess, stdenv, lib, writeTextFile, nix, disnix, dysnomia, inetutils, processManager, nix-processmgmt}:
+{createManagedProcess, stdenv, lib, writeTextFile, nix, disnix, dysnomia, inetutils, findutils, processManager, nix-processmgmt}:
 
 { dbus-daemon ? null
 , dysnomiaProperties ? {}
@@ -6,6 +6,7 @@
 , containerProviders ? []
 , extraDysnomiaContainersPath ? []
 , processManagerContainerSettings ? {}
+, authorizedUsers ? []
 }:
 
 let
@@ -21,7 +22,7 @@ in
 createManagedProcess {
   name = "disnix-service";
   process = "${disnix}/bin/disnix-service";
-  path = [ nix dysnomiaPkg disnix inetutils ];
+  path = [ nix dysnomiaPkg disnix inetutils findutils ];
   environment = import ./dysnomia-env.nix {
     inherit stdenv lib writeTextFile nix-processmgmt processManager dysnomiaProperties dysnomiaContainers containerProviders extraDysnomiaContainersPath processManagerContainerSettings;
   };
@@ -40,4 +41,39 @@ createManagedProcess {
       runlevels = [ 2 3 4 5 ];
     };
   };
+
+  # Add dbus service configuration file
+  postInstall = ''
+    mkdir -p $out/share/dbus-1/system.d
+    cat > $out/share/dbus-1/system.d/disnix.conf <<EOF
+    <!DOCTYPE busconfig PUBLIC "-//freedesktop//DTD D-BUS Bus Configuration 1.0//EN" "http://www.freedesktop.org/standards/dbus/1.0/busconfig.dtd">
+    <busconfig>
+        <policy user="root">
+            <allow own="org.nixos.disnix.Disnix"/>
+            <allow send_destination="org.nixos.disnix.Disnix"/>
+            <allow send_interface="org.nixos.disnix.Disnix"/>
+        </policy>
+
+        <policy group="disnix">
+            <deny own="org.nixos.disnix.Disnix"/>
+            <allow send_destination="org.nixos.disnix.Disnix"/>
+            <allow send_interface="org.nixos.disnix.Disnix"/>
+        </policy>
+
+        <policy context="default">
+            <deny own="org.nixos.disnix.Disnix"/>
+            <deny send_destination="org.nixos.disnix.Disnix"/>
+            <deny send_interface="org.nixos.disnix.Disnix"/>
+        </policy>
+
+        ${lib.concatMapStrings (authorizedUser: ''
+          <policy user="${authorizedUser}">
+            <allow own="org.nixos.disnix.Disnix"/>
+            <allow send_destination="org.nixos.disnix.Disnix"/>
+            <allow send_interface="org.nixos.disnix.Disnix"/>
+          </policy>
+        '') authorizedUsers}
+    </busconfig>
+    EOF
+  '';
 }

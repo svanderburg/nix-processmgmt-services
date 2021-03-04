@@ -1,5 +1,13 @@
-{createManagedProcess, lib, tomcat, jre, stateDir, runtimeDir, tmpDir, forceDisableUserChange, commonLibs ? []}:
-{instanceSuffix ? "", instanceName ? "tomcat${instanceSuffix}", tomcatConfigFiles, postInstall ? ""}:
+{createManagedProcess, lib, tomcat, jre, stateDir, runtimeDir, tmpDir, forceDisableUserChange}:
+
+{ instanceSuffix ? ""
+, instanceName ? "tomcat${instanceSuffix}"
+, tomcatConfigFiles
+, javaOpts ? ""
+, catalinaOpts ? ""
+, commonLibs ? []
+, postInstall ? ""
+}:
 
 let
   baseDir = "${stateDir}/${instanceName}";
@@ -15,6 +23,8 @@ createManagedProcess rec {
   args = [ "run" ];
   environment = {
     JRE_HOME = jre;
+    JAVA_OPTS = javaOpts;
+    CATALINA_OPTS = catalinaOpts;
     CATALINA_TMPDIR = tmpDir;
     CATALINA_BASE = baseDir;
     CATALINA_PID = pidFile;
@@ -36,7 +46,7 @@ createManagedProcess rec {
             if [ -f "$i" ]
             then
                 # If the given web application is a file, symlink it into the common/lib/ directory
-                ln -sfn $i ${baseDir}/lib/$(basename $i)
+                ln -sfn "$i" ${baseDir}/lib/$(basename "$i")
             elif [ -d "$i" ]
             then
                 # If the given web application is a directory, then iterate over the files
@@ -44,7 +54,7 @@ createManagedProcess rec {
 
                 for j in $i/lib/*
                 do
-                    ln -sfn $j ${baseDir}/lib/$(basename $j)
+                    ln -sfn "$j" ${baseDir}/lib/$(basename "$j")
                done
             fi
         done

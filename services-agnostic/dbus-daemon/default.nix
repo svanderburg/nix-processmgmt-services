@@ -1,5 +1,5 @@
 {createManagedProcess, lib, writeTextFile, dbus, stateDir, runtimeDir}:
-{extraConfig ? "", packages ? []}:
+{extraConfig ? "", busType ? "system", services ? []}:
 
 let
   user = "messagebus";
@@ -15,7 +15,7 @@ let
 
       <busconfig>
         <!-- Our well-known bus type, do not change this -->
-        <type>system</type>
+        <type>${busType}</type>
 
         <!-- Run as special user -->
         <user>${user}</user>
@@ -82,11 +82,15 @@ let
         </policy>
 
         <!-- Generate service and include directories for each package -->
-        ${lib.concatMapStrings (package: ''
-          <servicedir>${package}/share/dbus-1/system-services</servicedir>
-          <includedir>${package}/etc/dbus-1/system.d</includedir>
-          <includedir>${package}/share/dbus-1/system.d</includedir>
-        '') packages}
+        ${lib.concatMapStrings (service:
+          let
+            inherit (service) pkg;
+          in
+          ''
+            <servicedir>${pkg}/share/dbus-1/system-services</servicedir>
+            <includedir>${pkg}/etc/dbus-1/system.d</includedir>
+            <includedir>${pkg}/share/dbus-1/system.d</includedir>
+          '') services}
 
         <!-- Extra configuration options -->
         ${extraConfig}

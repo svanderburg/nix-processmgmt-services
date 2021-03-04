@@ -28,7 +28,16 @@ in
 
   simpleAppservingTomcat = import ./apache-tomcat/simple-appserving-tomcat.nix {
     inherit stateDir;
-    inherit (pkgs) lib;
+    inherit (pkgs) lib tomcat;
+    tomcatConstructorFun = constructors.simpleAppservingTomcat;
+    dysnomia = pkgs.dysnomia.override (origArgs: {
+      enableTomcatWebApplication = true;
+    });
+  };
+
+  disnixAppservingTomcat = import ./apache-tomcat/disnix-appserving-tomcat.nix {
+    inherit stateDir;
+    inherit (pkgs) lib tomcat libmatthew_java dbus_java DisnixWebService;
     tomcatConstructorFun = constructors.simpleAppservingTomcat;
     dysnomia = pkgs.dysnomia.override (origArgs: {
       enableTomcatWebApplication = true;

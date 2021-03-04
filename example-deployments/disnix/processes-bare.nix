@@ -30,7 +30,7 @@ rec {
 
   dbus-daemon = {
     pkg = constructors.dbus-daemon {
-      packages = [ pkgs.disnix ];
+      services = [ disnix-service ];
     };
   };
 

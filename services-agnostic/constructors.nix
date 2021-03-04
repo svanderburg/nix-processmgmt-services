@@ -41,7 +41,7 @@ in
 
   simpleAppservingTomcat = import ./apache-tomcat/simple-appserving-tomcat.nix {
     inherit createManagedProcess stateDir runtimeDir tmpDir forceDisableUserChange;
-    inherit (pkgs) stdenv;
+    inherit (pkgs) stdenv lib;
     jre = pkgs.jre8;
     tomcat = pkgs.tomcat9;
   };
@@ -53,7 +53,7 @@ in
 
   disnix-service = import ./disnix-service {
     inherit createManagedProcess processManager nix-processmgmt;
-    inherit (pkgs) stdenv lib writeTextFile nix disnix dysnomia inetutils;
+    inherit (pkgs) stdenv lib writeTextFile nix disnix dysnomia inetutils findutils;
   };
 
   docker = import ./docker {

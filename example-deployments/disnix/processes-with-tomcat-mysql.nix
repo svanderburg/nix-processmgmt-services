@@ -34,10 +34,10 @@ rec {
     };
   };
 
-  apache = containerProviderConstructors.simpleWebappApache {
-    serverAdmin = "root@localhost";
-    documentRoot = "/var/www";
-    enablePHP = true;
+  tomcat = containerProviderConstructors.disnixAppservingTomcat {
+    webapps = [
+      pkgs.tomcat9.webapps # Include the Tomcat example and management applications
+    ];
   };
 
   mysql = containerProviderConstructors.mysql {};
@@ -45,7 +45,8 @@ rec {
   disnix-service = {
     pkg = constructors.disnix-service {
       inherit dbus-daemon;
-      containerProviders = [ apache mysql ];
+      containerProviders = [ tomcat mysql ];
+      authorizedUsers = [ tomcat.name ];
     };
   };
 }
