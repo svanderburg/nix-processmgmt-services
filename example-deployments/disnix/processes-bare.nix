@@ -14,10 +14,6 @@ let
   constructors = import ../../services-agnostic/constructors.nix {
     inherit pkgs stateDir runtimeDir logDir tmpDir cacheDir spoolDir forceDisableUserChange processManager;
   };
-
-  containerProviderConstructors = import ../../service-containers-agnostic/constructors.nix {
-    inherit pkgs stateDir runtimeDir logDir tmpDir cacheDir spoolDir forceDisableUserChange processManager;
-  };
 in
 rec {
   sshd = {

@@ -42,11 +42,22 @@ rec {
   };
 
   apache = {
-    pkg = constructors.reverseProxyApache {
+    pkg = constructors.basicAuthReverseProxyApache {
       dependency = tomcat;
       serverAdmin = "admin@localhost";
       targetProtocol = "ajp";
       portPropertyName = "ajpPort";
+
+      authName = "DisnixWebService";
+      authUserFile = pkgs.stdenv.mkDerivation {
+        name = "htpasswd";
+        buildInputs = [ pkgs.apacheHttpd ];
+        buildCommand = ''
+          htpasswd -cb ./htpasswd admin secret
+          mv htpasswd $out
+        '';
+      };
+      requireUser = "admin";
     };
   };
 

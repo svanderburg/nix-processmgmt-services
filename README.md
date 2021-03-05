@@ -29,6 +29,10 @@ systems that consist of multiple processes:
   MySQL, PostgreSQL, Nginx, the Apache HTTP server, `svnserve`, Docker etc.
 * `hydra`: demonstrates how to deploy [Hydra](https://nixos.org/hydra): the
   Nix-based continuous integration system
+* `disnix` demonstrates how to deploy [Disnix](https://github.com/svanderburg/disnix)
+  including container provider services and the
+  [DisnixWebService](https://github.com/svanderburg/DisnixWebService) providing
+  remote deployment support via a web service.
 
 Deploying the example systems
 =============================

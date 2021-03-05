@@ -11,6 +11,8 @@
 , targetProtocol ? "http"
 , portPropertyName ? "port"
 , dependency
+, modules ? []
+, extraProxySettings ? ""
 , extraConfig ? ""
 , postInstall ? ""
 }:
@@ -40,11 +42,12 @@ import ./simple-webapp-apache.nix {
     "slotmem_shm"
     "xml2enc"
     "watchdog"
-  ];
+  ] ++ modules;
   extraConfig = ''
     <Proxy *>
       Order deny,allow
       Allow from all
+      ${extraProxySettings}
     </Proxy>
 
     ProxyRequests     Off
