@@ -52,12 +52,12 @@ in
   };
 
   dbus-daemon = import ./dbus-daemon {
-    inherit createManagedProcess stateDir runtimeDir;
+    inherit createManagedProcess stateDir runtimeDir ids;
     inherit (pkgs) lib dbus writeTextFile;
   };
 
   disnix-service = import ./disnix-service {
-    inherit createManagedProcess processManager nix-processmgmt;
+    inherit createManagedProcess processManager nix-processmgmt ids;
     inherit (pkgs) stdenv lib writeTextFile nix disnix dysnomia inetutils findutils;
   };
 

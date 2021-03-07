@@ -1,4 +1,4 @@
-{createManagedProcess, lib, writeTextFile, dbus, stateDir, runtimeDir}:
+{createManagedProcess, lib, writeTextFile, dbus, stateDir, runtimeDir, ids ? {}}:
 {extraConfig ? "", busType ? "system", services ? []}:
 
 let
@@ -112,13 +112,17 @@ createManagedProcess {
 
   credentials = {
     groups = {
-      "${group}" = {};
+      "${group}" = lib.optionalAttrs (ids ? gids && ids.gids ? dbus-daemon) {
+        gid = ids.gids.dbus-daemon;
+      };
     };
     users = {
       "${user}" = {
         inherit group;
         homeDir = dbusRuntimeDir;
         description = "D-Bus system message bus daemon user";
+      } // lib.optionalAttrs (ids ? uids && ids.uids ? dbus-daemon) {
+        uid = ids.uids.dbus-daemon;
       };
     };
   };

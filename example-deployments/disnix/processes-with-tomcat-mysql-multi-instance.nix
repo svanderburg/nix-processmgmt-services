@@ -11,12 +11,14 @@
 }:
 
 let
+  ids = if builtins.pathExists ./ids-tomcat-mysql-multi-instance.nix then (import ./ids-tomcat-mysql-multi-instance.nix).ids else {};
+
   constructors = import ../../services-agnostic/constructors.nix {
-    inherit pkgs stateDir runtimeDir logDir tmpDir cacheDir spoolDir forceDisableUserChange processManager;
+    inherit pkgs stateDir runtimeDir logDir tmpDir cacheDir spoolDir forceDisableUserChange processManager ids;
   };
 
   containerProviderConstructors = import ../../service-containers-agnostic/constructors.nix {
-    inherit pkgs stateDir runtimeDir logDir tmpDir cacheDir spoolDir forceDisableUserChange processManager;
+    inherit pkgs stateDir runtimeDir logDir tmpDir cacheDir spoolDir forceDisableUserChange processManager ids;
   };
 in
 rec {
@@ -26,12 +28,16 @@ rec {
         UsePAM yes
       '';
     };
+
+    requiresUniqueIdsFor = [ "uids" "gids" ];
   };
 
   dbus-daemon = {
     pkg = constructors.dbus-daemon {
       services = [ disnix-service ];
     };
+
+    requiresUniqueIdsFor = [ "uids" "gids" ];
   };
 
   tomcat-primary = containerProviderConstructors.disnixAppservingTomcat {
@@ -44,6 +50,7 @@ rec {
     webapps = [
       pkgs.tomcat9.webapps # Include the Tomcat example and management applications
     ];
+    properties.requiresUniqueIdsFor = [ "uids" "gids" ];
   };
 
   tomcat-secondary = containerProviderConstructors.disnixAppservingTomcat {
@@ -56,16 +63,19 @@ rec {
     webapps = [
       pkgs.tomcat9.webapps # Include the Tomcat example and management applications
     ];
+    properties.requiresUniqueIdsFor = [ "uids" "gids" ];
   };
 
   mysql-primary = containerProviderConstructors.mysql {
     instanceSuffix = "-primary";
     port = 3306;
+    properties.requiresUniqueIdsFor = [ "uids" "gids" ];
   };
 
   mysql-secondary = containerProviderConstructors.mysql {
     instanceSuffix = "-secondary";
     port = 3307;
+    properties.requiresUniqueIdsFor = [ "uids" "gids" ];
   };
 
   disnix-service = {
@@ -74,5 +84,7 @@ rec {
       containerProviders = [ tomcat-primary tomcat-secondary mysql-primary mysql-secondary ];
       authorizedUsers = [ tomcat-primary.name tomcat-secondary.name ];
     };
+
+    requiresUniqueIdsFor = [ "gids" ];
   };
 }

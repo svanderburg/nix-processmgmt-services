@@ -11,12 +11,14 @@
 }:
 
 let
+  ids = if builtins.pathExists ./ids-tomcat-mysql.nix then (import ./ids-tomcat-mysql.nix).ids else {};
+
   constructors = import ../../services-agnostic/constructors.nix {
-    inherit pkgs stateDir runtimeDir logDir tmpDir cacheDir spoolDir forceDisableUserChange processManager;
+    inherit pkgs stateDir runtimeDir logDir tmpDir cacheDir spoolDir forceDisableUserChange processManager ids;
   };
 
   containerProviderConstructors = import ../../service-containers-agnostic/constructors.nix {
-    inherit pkgs stateDir runtimeDir logDir tmpDir cacheDir spoolDir forceDisableUserChange processManager;
+    inherit pkgs stateDir runtimeDir logDir tmpDir cacheDir spoolDir forceDisableUserChange processManager ids;
   };
 in
 rec {
@@ -26,12 +28,16 @@ rec {
         UsePAM yes
       '';
     };
+
+    requiresUniqueIdsFor = [ "uids" "gids" ];
   };
 
   dbus-daemon = {
     pkg = constructors.dbus-daemon {
       services = [ disnix-service ];
     };
+
+    requiresUniqueIdsFor = [ "uids" "gids" ];
   };
 
   tomcat = containerProviderConstructors.disnixAppservingTomcat {
@@ -40,6 +46,8 @@ rec {
       pkgs.tomcat9.webapps # Include the Tomcat example and management applications
     ];
     enableAJP = true;
+
+    properties.requiresUniqueIdsFor = [ "uids" "gids" ];
   };
 
   apache = {
@@ -60,15 +68,24 @@ rec {
       };
       requireUser = "admin";
     };
+
+    requiresUniqueIdsFor = [ "uids" "gids" ];
   };
 
-  mysql = containerProviderConstructors.mysql {};
+  mysql = containerProviderConstructors.mysql {
+    properties.requiresUniqueIdsFor = [ "uids" "gids" ];
+  };
 
   disnix-service = {
     pkg = constructors.disnix-service {
       inherit dbus-daemon;
       containerProviders = [ tomcat mysql ];
       authorizedUsers = [ tomcat.name ];
+      dysnomiaProperties = {
+        targetEPR = "http://$(hostname)/DisnixWebService/services/DisnixWebService";
+      };
     };
+
+    requiresUniqueIdsFor = [ "gids" ];
   };
 }

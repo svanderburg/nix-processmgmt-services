@@ -1,4 +1,4 @@
-{createManagedProcess, stdenv, lib, writeTextFile, nix, disnix, dysnomia, inetutils, findutils, processManager, nix-processmgmt}:
+{createManagedProcess, stdenv, lib, writeTextFile, nix, disnix, dysnomia, inetutils, findutils, processManager, nix-processmgmt, ids ? {}}:
 
 { dbus-daemon ? null
 , dysnomiaProperties ? {}
@@ -32,7 +32,9 @@ createManagedProcess {
 
   credentials = {
     groups = {
-      "${group}" = {};
+      "${group}" = lib.optionalAttrs (ids ? gids && ids.gids ? disnix-service) {
+        gid = ids.gids.disnix-service;
+      };
     };
   };
 
