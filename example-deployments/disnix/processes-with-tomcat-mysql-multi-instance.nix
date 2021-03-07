@@ -34,41 +34,45 @@ rec {
     };
   };
 
-  tomcat = containerProviderConstructors.disnixAppservingTomcat {
+  tomcat-primary = containerProviderConstructors.disnixAppservingTomcat {
+    instanceSuffix = "-primary";
+    httpPort = 8080;
+    httpsPort = 8443;
+    serverPort = 8005;
+    ajpPort = 8009;
     commonLibs = [ "${pkgs.mysql_jdbc}/share/java/mysql-connector-java.jar" ];
     webapps = [
       pkgs.tomcat9.webapps # Include the Tomcat example and management applications
     ];
-    enableAJP = true;
   };
 
-  apache = {
-    pkg = constructors.basicAuthReverseProxyApache {
-      dependency = tomcat;
-      serverAdmin = "admin@localhost";
-      targetProtocol = "ajp";
-      portPropertyName = "ajpPort";
-
-      authName = "DisnixWebService";
-      authUserFile = pkgs.stdenv.mkDerivation {
-        name = "htpasswd";
-        buildInputs = [ pkgs.apacheHttpd ];
-        buildCommand = ''
-          htpasswd -cb ./htpasswd admin secret
-          mv htpasswd $out
-        '';
-      };
-      requireUser = "admin";
-    };
+  tomcat-secondary = containerProviderConstructors.disnixAppservingTomcat {
+    instanceSuffix = "-secondary";
+    httpPort = 8081;
+    httpsPort = 8444;
+    serverPort = 8006;
+    ajpPort = 8010;
+    commonLibs = [ "${pkgs.mysql_jdbc}/share/java/mysql-connector-java.jar" ];
+    webapps = [
+      pkgs.tomcat9.webapps # Include the Tomcat example and management applications
+    ];
   };
 
-  mysql = containerProviderConstructors.mysql {};
+  mysql-primary = containerProviderConstructors.mysql {
+    instanceSuffix = "-primary";
+    port = 3306;
+  };
+
+  mysql-secondary = containerProviderConstructors.mysql {
+    instanceSuffix = "-secondary";
+    port = 3307;
+  };
 
   disnix-service = {
     pkg = constructors.disnix-service {
       inherit dbus-daemon;
-      containerProviders = [ tomcat mysql ];
-      authorizedUsers = [ tomcat.name ];
+      containerProviders = [ tomcat-primary tomcat-secondary mysql-primary mysql-secondary ];
+      authorizedUsers = [ tomcat-primary.name tomcat-secondary.name ];
     };
   };
 }
