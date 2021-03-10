@@ -6,6 +6,7 @@
 , javaOpts ? ""
 , catalinaOpts ? ""
 , commonLibs ? []
+, dependencies ? []
 , postInstall ? ""
 }:
 
@@ -17,7 +18,7 @@ let
 in
 createManagedProcess rec {
   name = instanceName;
-  inherit instanceName user pidFile postInstall;
+  inherit instanceName user pidFile dependencies postInstall;
 
   process = "${tomcat}/bin/catalina.sh";
   args = [ "run" ];

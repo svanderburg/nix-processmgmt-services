@@ -46,6 +46,7 @@ rec {
       pkgs.tomcat9.webapps # Include the Tomcat example and management applications
     ];
     enableAJP = true;
+    inherit dbus-daemon;
 
     properties.requiresUniqueIdsFor = [ "uids" "gids" ];
   };

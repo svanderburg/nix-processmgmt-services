@@ -12,6 +12,7 @@
 , webapps ? [ tomcat.webapps ]
 , enableAJP ? false
 , type ? null
+, dependencies ? []
 , properties ? {}
 }:
 
@@ -19,7 +20,7 @@ let
   catalinaBaseDir = "${stateDir}/${instanceName}";
 
   pkg = tomcatConstructorFun {
-    inherit instanceName serverPort httpPort httpsPort ajpPort javaOpts catalinaOpts commonLibs sharedLibs webapps enableAJP;
+    inherit instanceName serverPort httpPort httpsPort ajpPort javaOpts catalinaOpts commonLibs sharedLibs webapps enableAJP dependencies;
 
     postInstall = ''
       # Add Dysnomia container configuration file for a Tomcat web application

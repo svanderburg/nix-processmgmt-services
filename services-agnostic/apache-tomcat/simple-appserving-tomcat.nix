@@ -12,6 +12,7 @@
 , sharedLibs ? []
 , webapps ? [ tomcat.webapps ]
 , enableAJP ? false
+, dependencies ? []
 , postInstall ? ""
 }:
 
@@ -96,5 +97,5 @@ in
 import ./default.nix {
   inherit createManagedProcess lib tomcat jre stateDir runtimeDir tmpDir forceDisableUserChange;
 } {
-  inherit tomcatConfigFiles instanceName javaOpts catalinaOpts commonLibs postInstall;
+  inherit tomcatConfigFiles instanceName javaOpts catalinaOpts commonLibs dependencies postInstall;
 }

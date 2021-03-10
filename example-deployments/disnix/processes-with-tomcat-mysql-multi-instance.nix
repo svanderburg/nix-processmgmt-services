@@ -40,7 +40,7 @@ rec {
     requiresUniqueIdsFor = [ "uids" "gids" ];
   };
 
-  tomcat-primary = containerProviderConstructors.disnixAppservingTomcat {
+  tomcat-primary = containerProviderConstructors.simpleAppservingTomcat {
     instanceSuffix = "-primary";
     httpPort = 8080;
     httpsPort = 8443;
@@ -53,7 +53,7 @@ rec {
     properties.requiresUniqueIdsFor = [ "uids" "gids" ];
   };
 
-  tomcat-secondary = containerProviderConstructors.disnixAppservingTomcat {
+  tomcat-secondary = containerProviderConstructors.simpleAppservingTomcat {
     instanceSuffix = "-secondary";
     httpPort = 8081;
     httpsPort = 8444;
@@ -82,7 +82,6 @@ rec {
     pkg = constructors.disnix-service {
       inherit dbus-daemon;
       containerProviders = [ tomcat-primary tomcat-secondary mysql-primary mysql-secondary ];
-      authorizedUsers = [ tomcat-primary.name tomcat-secondary.name ];
     };
 
     requiresUniqueIdsFor = [ "gids" ];
