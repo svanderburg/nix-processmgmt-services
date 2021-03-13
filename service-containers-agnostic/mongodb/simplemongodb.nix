@@ -35,8 +35,8 @@ in
   providesContainer = containerName;
 } // lib.optionalAttrs (type != null) {
   inherit type;
-} // (if mongoDumpArgs == null then {} else {
+} // lib.optionalAttrs (mongoDumpArgs != null) {
   inherit mongoDumpArgs;
-}) // (if mongoRestoreArgs == null then {} else {
+} // lib.optionalAttrs (mongoRestoreArgs != null) {
   inherit mongoRestoreArgs;
-}) // properties
+} // properties
