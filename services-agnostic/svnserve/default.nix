@@ -12,8 +12,8 @@ let
   pidFile = "${runtimeDir}/${instanceName}.pid";
 in
 createManagedProcess {
-  name = instanceName;
   inherit instanceName postInstall;
+
   initialize = ''
     mkdir -p ${svnBaseDir}
     ${lib.optionalString (!forceDisableUserChange) ''

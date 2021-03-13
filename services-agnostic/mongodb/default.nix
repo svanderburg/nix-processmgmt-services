@@ -12,8 +12,8 @@ let
   group = instanceName;
 in
 createManagedProcess {
-  name = instanceName;
   inherit instanceName initialize postInstall;
+
   process = "${mongodb}/bin/mongod";
   args = [ "--config" configFile ];
   daemonExtraArgs = [ "--fork" "--pidfilepath" "${runtimeDir}/${instanceName}.pid" ];

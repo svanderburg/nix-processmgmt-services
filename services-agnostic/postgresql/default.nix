@@ -16,8 +16,8 @@ let
   group = instanceName;
 in
 createManagedProcess rec {
-  name = instanceName;
   inherit instanceName user postInstall;
+
   path = [ postgresql su ];
   initialize = ''
     mkdir -m0755 -p ${socketDir}

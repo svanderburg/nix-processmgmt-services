@@ -41,7 +41,6 @@ let
   };
 in
 createManagedProcess {
-  name = instanceName;
   inherit instanceName user;
 
   path = [ postgresql su ];

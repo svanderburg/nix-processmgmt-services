@@ -29,7 +29,6 @@ let
   user = instanceName;
 in
 createManagedProcess {
-  name = instanceName;
   inherit instanceName;
 
   initialize = ''

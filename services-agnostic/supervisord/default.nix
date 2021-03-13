@@ -12,8 +12,8 @@ let
   logFile = "${logDir}/${instanceName}.log";
 in
 createManagedProcess {
-  name = instanceName;
   inherit instanceName postInstall;
+
   initialize = ''
     mkdir -p ${logDir}
     ${initialize}

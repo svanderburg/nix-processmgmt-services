@@ -14,7 +14,6 @@ let
   group = instanceName;
 in
 createManagedProcess {
-  name = instanceName;
   inherit instanceName initialize dependencies environment postInstall;
 
   process = "${apacheHttpd}/bin/httpd";

@@ -9,8 +9,8 @@ let
   queueRunnerBaseDir = "${hydra-server.baseDir}/queue-runner";
 in
 createManagedProcess {
-  name = instanceName;
   inherit instanceName;
+
   environment = import ./generate-env-vars.nix {
     inherit (hydra-server) baseDir hydraDatabase hydraUser;
   } // {

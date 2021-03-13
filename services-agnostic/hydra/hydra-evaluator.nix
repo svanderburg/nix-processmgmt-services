@@ -7,8 +7,8 @@ let
   # TODO: ExecStopPost /bin/hydra-evaluator --unlock
 in
 createManagedProcess {
-  name = instanceName;
   inherit instanceName;
+
   dependencies = [ nix-daemon.pkg hydra-server.pkg ];
   path = [ hydra ];
   environment = import ./generate-env-vars.nix {

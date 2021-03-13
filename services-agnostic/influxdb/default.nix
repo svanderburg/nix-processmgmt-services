@@ -13,7 +13,6 @@ let
   influxdbStateDir = "${stateDir}/lib/${instanceName}";
 in
 createManagedProcess {
-  name = instanceName;
   inherit instanceName user postInstall;
   foregroundProcess = "${influxdb}/bin/influxd";
   args = [ "-config" configFile ];

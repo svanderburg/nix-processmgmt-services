@@ -22,7 +22,6 @@ let
   group = instanceName;
 in
 createManagedProcess {
-  name = instanceName;
   inherit instanceName;
 
   initialize = ''
