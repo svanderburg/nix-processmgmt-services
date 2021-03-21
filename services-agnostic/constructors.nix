@@ -5,6 +5,7 @@
 , runtimeDir
 , cacheDir
 , spoolDir
+, libDir
 , tmpDir
 , forceDisableUserChange
 , processManager
@@ -52,7 +53,7 @@ in
   };
 
   dbus-daemon = import ./dbus-daemon {
-    inherit createManagedProcess stateDir runtimeDir ids;
+    inherit createManagedProcess libDir runtimeDir ids;
     inherit (pkgs) lib dbus writeTextFile;
   };
 
@@ -88,18 +89,18 @@ in
   };
 
   hydra-server = import ./hydra/hydra-server.nix {
-    inherit createManagedProcess stateDir forceDisableUserChange;
+    inherit createManagedProcess libDir forceDisableUserChange;
     inherit (pkgs) lib writeTextFile postgresql su;
     hydra = pkgs.hydra-unstable;
   };
 
   influxdb = import ./influxdb {
-    inherit createManagedProcess stateDir;
+    inherit createManagedProcess libDir;
     inherit (pkgs) influxdb;
   };
 
   simpleInfluxdb = import ./influxdb/simpleinfluxdb.nix {
-    inherit createManagedProcess stateDir;
+    inherit createManagedProcess libDir;
     inherit (pkgs) influxdb writeTextFile;
   };
 
@@ -139,7 +140,7 @@ in
   };
 
   sshd = import ./sshd {
-    inherit createManagedProcess stateDir runtimeDir tmpDir forceDisableUserChange;
+    inherit createManagedProcess libDir runtimeDir tmpDir forceDisableUserChange;
     inherit (pkgs) writeTextFile openssh;
   };
 
@@ -164,7 +165,7 @@ in
   };
 
   extendableSupervisord = import ./supervisord/extendable-supervisord.nix {
-    inherit createManagedProcess stateDir runtimeDir logDir;
+    inherit createManagedProcess libDir runtimeDir logDir;
     inherit (pkgs) writeTextFile;
     inherit (pkgs.pythonPackages) supervisor;
   };

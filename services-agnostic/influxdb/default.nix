@@ -1,4 +1,4 @@
-{createManagedProcess, influxdb, stateDir}:
+{createManagedProcess, influxdb, libDir}:
 
 { instanceSuffix ? ""
 , instanceName ? "influxdb${instanceSuffix}"
@@ -10,7 +10,7 @@ let
   user = instanceName;
   group = instanceName;
 
-  influxdbStateDir = "${stateDir}/lib/${instanceName}";
+  influxdbStateDir = "${libDir}/${instanceName}";
 in
 createManagedProcess {
   inherit instanceName user postInstall;

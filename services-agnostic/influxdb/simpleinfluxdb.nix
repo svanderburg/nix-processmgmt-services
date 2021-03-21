@@ -1,4 +1,4 @@
-{createManagedProcess, influxdb, writeTextFile, stateDir}:
+{createManagedProcess, influxdb, writeTextFile, libDir}:
 
 { instanceSuffix ? ""
 , instanceName ? "influxdb${instanceSuffix}"
@@ -11,7 +11,7 @@
 }:
 
 let
-  influxdbStateDir = "${stateDir}/lib/${instanceName}";
+  influxdbStateDir = "${libDir}/${instanceName}";
 
   configFile = writeTextFile {
     name = "influxdb.conf";
@@ -34,7 +34,7 @@ let
   };
 in
 import ./default.nix {
-  inherit createManagedProcess influxdb stateDir;
+  inherit createManagedProcess influxdb libDir;
 } {
   inherit instanceName configFile postInstall;
 }

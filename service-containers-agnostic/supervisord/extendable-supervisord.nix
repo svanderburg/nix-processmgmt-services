@@ -1,6 +1,7 @@
-{supervisordConstructorFun, lib, dysnomia, stateDir}:
+{supervisordConstructorFun, lib, dysnomia, libDir}:
 
-{ instanceSuffix ? "", instanceName ? "supervisord${instanceSuffix}"
+{ instanceSuffix ? ""
+, instanceName ? "supervisord${instanceSuffix}"
 , containerName ? "supervisord-program${instanceSuffix}"
 , inetHTTPServerPort ? 9001
 , postInstall ? ""
@@ -9,7 +10,7 @@
 }:
 
 let
-  supervisordTargetDir = "${stateDir}/lib/${instanceName}/conf.d";
+  supervisordTargetDir = "${libDir}/${instanceName}/conf.d";
 
   pkg = supervisordConstructorFun {
     inherit instanceName inetHTTPServerPort;

@@ -1,4 +1,4 @@
-{createManagedProcess, writeTextFile, supervisor, runtimeDir, logDir, stateDir}:
+{createManagedProcess, writeTextFile, supervisor, runtimeDir, logDir, libDir}:
 
 { instanceSuffix ? ""
 , instanceName ? "supervisord${instanceSuffix}"
@@ -7,7 +7,7 @@
 }:
 
 let
-  includeDir = "${stateDir}/lib/${instanceName}/conf.d";
+  includeDir = "${libDir}/${instanceName}/conf.d";
 in
 import ./default.nix {
   inherit createManagedProcess supervisor logDir runtimeDir;

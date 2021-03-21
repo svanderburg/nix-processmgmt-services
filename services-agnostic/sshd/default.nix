@@ -1,4 +1,4 @@
-{createManagedProcess, writeTextFile, openssh, stateDir, runtimeDir, tmpDir, forceDisableUserChange}:
+{createManagedProcess, writeTextFile, openssh, libDir, runtimeDir, tmpDir, forceDisableUserChange}:
 
 { instanceSuffix ? ""
 # The service is called sshd, and not openssh, because it relies on a hardcoded assumption that the privilege separation user is named sshd
@@ -8,7 +8,7 @@
 }:
 
 let
-  sshdStateDir = "${stateDir}/lib/${instanceName}";
+  sshdStateDir = "${libDir}/${instanceName}";
 
   sshdConfig = writeTextFile {
     name = "sshd_config";

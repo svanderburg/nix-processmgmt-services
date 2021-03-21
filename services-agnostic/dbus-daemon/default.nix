@@ -1,4 +1,4 @@
-{createManagedProcess, lib, writeTextFile, dbus, stateDir, runtimeDir, ids ? {}}:
+{createManagedProcess, lib, writeTextFile, dbus, libDir, runtimeDir, ids ? {}}:
 {extraConfig ? "", busType ? "system", services ? []}:
 
 let
@@ -101,7 +101,7 @@ in
 createManagedProcess {
   name = "dbus-daemon";
   initialize = ''
-    mkdir -p ${stateDir}/lib/dbus
+    mkdir -p ${libDir}/dbus
     mkdir -p ${dbusRuntimeDir}
     ${dbus}/bin/dbus-uuidgen --ensure
   '';

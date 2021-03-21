@@ -5,6 +5,7 @@
 , runtimeDir
 , cacheDir
 , spoolDir
+, libDir
 , tmpDir
 , forceDisableUserChange
 , processManager
@@ -13,7 +14,7 @@
 
 let
   constructors = import ../services-agnostic/constructors.nix {
-    inherit nix-processmgmt pkgs stateDir logDir runtimeDir cacheDir spoolDir tmpDir forceDisableUserChange processManager ids;
+    inherit nix-processmgmt pkgs stateDir logDir runtimeDir cacheDir spoolDir libDir tmpDir forceDisableUserChange processManager ids;
   };
 in
 {
@@ -81,7 +82,7 @@ in
   };
 
   extendableSupervisord = import ./supervisord/extendable-supervisord.nix {
-    inherit stateDir;
+    inherit libDir;
     inherit (pkgs) lib;
     supervisordConstructorFun = constructors.extendableSupervisord;
     dysnomia = pkgs.dysnomia.override (origArgs: {

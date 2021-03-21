@@ -1,4 +1,4 @@
-{createManagedProcess, lib, writeTextFile, hydra, postgresql, su, stateDir, forceDisableUserChange}:
+{createManagedProcess, lib, writeTextFile, hydra, postgresql, su, libDir, forceDisableUserChange}:
 
 { instanceSuffix ? ""
 , instanceName ? "hydra-server${instanceSuffix}"
@@ -11,7 +11,7 @@
 , user ? "hydra-www${instanceSuffix}"
 , listenHost ? "*"
 , port ? 3000
-, baseDir ? "${stateDir}/lib/${hydraInstanceName}"
+, baseDir ? "${libDir}/${hydraInstanceName}"
 , dbi ? null
 , gcRootsDir ? "/nix/var/nix/gcroots/${hydraInstanceName}"
 , hydraURL ? "http://localhost"
