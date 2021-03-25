@@ -21,9 +21,9 @@ createManagedProcess {
     ''}
   '';
   process = "${subversion.out}/bin/svnserve";
-  args = [ "-r" svnBaseDir "--listen-port" (toString port) ];
-  foregroundProcessExtraArgs = [ "--foreground" ];
-  daemonExtraArgs = [ "--daemon" "--pid-file" pidFile ];
+  args = [ "-r" svnBaseDir "--listen-port" port "--daemon" ];
+  foregroundProcessExtraArgs = ["--foreground" ];
+  daemonExtraArgs = [ "--pid-file" pidFile ];
 
   overrides = {
     sysvinit = {
