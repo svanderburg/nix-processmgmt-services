@@ -23,6 +23,10 @@ in
     inherit pkgs processManagers profiles testService;
   };
 
+  docker = import ./docker {
+    inherit pkgs processManagers profiles testService;
+  };
+
   influxdb = import ./influxdb {
     inherit pkgs processManagers profiles testService;
   };

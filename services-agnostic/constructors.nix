@@ -63,7 +63,7 @@ in
   };
 
   docker = import ./docker {
-    inherit createManagedProcess;
+    inherit createManagedProcess runtimeDir libDir;
     inherit (pkgs) docker kmod;
   };
 
