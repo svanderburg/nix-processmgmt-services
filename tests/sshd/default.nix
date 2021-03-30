@@ -1,0 +1,41 @@
+{ pkgs, testService, processManagers, profiles }:
+
+testService {
+  exprFile = ./processes.nix;
+  systemPackages = [ pkgs.openssh ];
+
+  initialTests = {forceDisableUserChange, ...}:
+    let
+      homeDir = if forceDisableUserChange then "/home/unprivileged" else "/root";
+    in
+    ''
+      machine.succeed("cd ${homeDir}")
+      machine.succeed('ssh-keygen -t ecdsa -f key -N ""')
+      machine.succeed("mkdir -m 700 ${homeDir}/.ssh")
+      machine.succeed("cp key.pub ${homeDir}/.ssh/authorized_keys")
+      machine.succeed("chmod 600 ${homeDir}/.ssh/authorized_keys")
+    ''
+    + pkgs.lib.optionalString forceDisableUserChange ''
+      machine.succeed("chown unprivileged:users key")
+      machine.succeed("chown -R unprivileged:users ${homeDir}/.ssh")
+    '';
+
+  readiness = {instanceName, instance, ...}:
+    ''
+      machine.wait_for_open_port(${toString instance.port})
+    '';
+
+  tests = {instanceName, instance, forceDisableUserChange, ...}:
+    # Make a special exception for the first instance running in privileged mode. It should be connectible with the default settings
+    if instanceName == "sshd" && !forceDisableUserChange then ''
+      machine.succeed(
+          "ssh -i key -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no localhost $(type -p ls) /"
+      )
+    '' else ''
+      machine.succeed(
+          "${pkgs.lib.optionalString forceDisableUserChange "su unprivileged -c '"}ssh -p ${toString instance.port} -i key -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no localhost $(type -p ls) /${pkgs.lib.optionalString forceDisableUserChange "'"}"
+      )
+    '';
+
+  inherit processManagers profiles;
+}

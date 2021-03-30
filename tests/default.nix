@@ -39,6 +39,18 @@ in
     inherit pkgs processManagers profiles testService;
   };
 
+  s6-svscan = import ./s6-svscan {
+    inherit pkgs processManagers profiles testService;
+  };
+
+  sshd = import ./sshd {
+    inherit pkgs processManagers profiles testService;
+  };
+
+  supervisord = import ./supervisord {
+    inherit pkgs processManagers profiles testService;
+  };
+
   svnserve = import ./svnserve {
     inherit pkgs processManagers profiles testService;
   };
