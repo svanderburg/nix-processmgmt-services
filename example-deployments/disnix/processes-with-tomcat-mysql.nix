@@ -5,6 +5,7 @@
 , logDir ? "${stateDir}/log"
 , spoolDir ? "${stateDir}/spool"
 , cacheDir ? "${stateDir}/cache"
+, libDir ? "${stateDir}/lib"
 , tmpDir ? (if stateDir == "/var" then "/tmp" else "${stateDir}/tmp")
 , forceDisableUserChange ? false
 , processManager
@@ -14,11 +15,11 @@ let
   ids = if builtins.pathExists ./ids-tomcat-mysql.nix then (import ./ids-tomcat-mysql.nix).ids else {};
 
   constructors = import ../../services-agnostic/constructors.nix {
-    inherit pkgs stateDir runtimeDir logDir tmpDir cacheDir spoolDir forceDisableUserChange processManager ids;
+    inherit pkgs stateDir runtimeDir logDir tmpDir cacheDir spoolDir libDir forceDisableUserChange processManager ids;
   };
 
   containerProviderConstructors = import ../../service-containers-agnostic/constructors.nix {
-    inherit pkgs stateDir runtimeDir logDir tmpDir cacheDir spoolDir forceDisableUserChange processManager ids;
+    inherit pkgs stateDir runtimeDir logDir tmpDir cacheDir spoolDir libDir forceDisableUserChange processManager ids;
   };
 in
 rec {
