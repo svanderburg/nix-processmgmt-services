@@ -39,6 +39,10 @@ in
     inherit pkgs processManagers profiles testService;
   };
 
+  nginx-reverse-proxy-hostbased = import ./nginx-reverse-proxy-hostbased {
+    inherit pkgs processManagers profiles testService nix-processmgmt;
+  };
+
   postgresql = import ./postgresql {
     inherit pkgs processManagers profiles testService;
   };
