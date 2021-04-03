@@ -124,6 +124,11 @@ in
     inherit (pkgs) lib nginx;
   };
 
+  simpleWebappNginx = import ./nginx/simple-webapp-nginx.nix {
+    inherit createManagedProcess stateDir runtimeDir cacheDir forceDisableUserChange;
+    inherit (pkgs) lib nginx writeTextFile;
+  };
+
   nginxReverseProxyHostBased = import ./nginx/nginx-reverse-proxy-hostbased.nix {
     inherit createManagedProcess stateDir runtimeDir cacheDir forceDisableUserChange;
     inherit (pkgs) stdenv lib writeTextFile nginx;

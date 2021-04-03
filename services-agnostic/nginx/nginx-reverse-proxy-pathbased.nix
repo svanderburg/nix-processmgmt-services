@@ -5,6 +5,7 @@
 , instanceSuffix ? ""
 , instanceName ? "nginx${instanceSuffix}"
 , enableCache ? false
+, workerConnections ? 190000
 }:
 
 interDependencies:
@@ -38,7 +39,7 @@ import ./default.nix {
       ''}
 
       events {
-        worker_connections 190000;
+        worker_connections ${toString workerConnections};
       }
 
       http {
@@ -65,13 +66,15 @@ import ./default.nix {
               ip_hash;
               ${if dependency ? targets
                 then lib.concatMapStrings (target: "server ${target.properties.hostname}:${toString dependency.port};\n") dependency.targets
-                else "server localhost:${dependency.port};\n"
+                else "server localhost:${toString dependency.port};\n"
               }
             }
           ''
         ) dependencies}
 
         server {
+          listen ${toString port};
+
           ${lib.concatMapStrings (dependency:
             ''
               location ${dependency.baseURL} {

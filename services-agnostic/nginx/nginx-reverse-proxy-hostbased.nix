@@ -4,6 +4,7 @@
 , webapps ? []
 , instanceSuffix ? ""
 , instanceName ? "nginx${instanceSuffix}"
+, workerConnections ? 190000
 }:
 
 interDependencies:
@@ -35,7 +36,7 @@ import ./default.nix {
       ''}
 
       events {
-        worker_connections 190000;
+        worker_connections ${toString workerConnections};
       }
 
       http {
