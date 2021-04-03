@@ -20,6 +20,21 @@ let
 
   user = instanceName;
   group = instanceName;
+
+  # We must override the package configuration settings to compile it with different configuration settings,
+  # if we want to use a different group or run fcron as unprivileged user
+  fcronPkg =
+    if forceDisableUserChange then fcron.overrideAttrs (originalAttrs:
+      originalAttrs // {
+        configureFlags = originalAttrs.configureFlags ++ [ "--with-run-non-privileged" "--with-rootname=unprivileged" "--with-rootgroup=users" "--with-username=unprivileged" "--with-groupname=users" ];
+      }
+    )
+    else if user != "fcron" || group != "fcron" then fcron.overrideAttrs (originalAttrs:
+      originalAttrs // {
+        configureFlags = originalAttrs.configureFlags ++ [ "--with-rootgroup=${group}" "--with-username=${user}" "--with-groupname=${group}" ];
+      }
+    )
+    else fcron;
 in
 createManagedProcess {
   inherit instanceName;
@@ -34,7 +49,8 @@ createManagedProcess {
     ${initialize}
   '';
 
-  process = "${fcron}/bin/fcron";
+  path = [ fcronPkg ];
+  process = "${fcronPkg}/bin/fcron";
   args = [ "--configfile" "${fcronEtcDir}/fcron.conf" ];
   foregroundProcessExtraArgs = [ "--foreground" "--nosyslog" ];
   daemonExtraArgs = [ "--background" ];

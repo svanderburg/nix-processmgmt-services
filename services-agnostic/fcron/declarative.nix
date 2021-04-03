@@ -1,4 +1,4 @@
-{createManagedProcess, writeTextFile, lib, fcron, stateDir, runtimeDir, tmpDir, spoolDir, forceDisableUserChange}:
+{createManagedProcess, writeTextFile, lib, fcron, utillinux, stateDir, runtimeDir, tmpDir, spoolDir, forceDisableUserChange}:
 
 { instanceSuffix ? ""
 , instanceName ? "fcron${instanceSuffix}"
@@ -8,14 +8,15 @@
 
 let
   fcronSpoolDir = "${spoolDir}/${instanceName}";
+  fcronEtcDir = "${stateDir}/etc/${instanceName}";
 in
 import ./default.nix {
   inherit createManagedProcess writeTextFile lib fcron stateDir runtimeDir tmpDir spoolDir forceDisableUserChange;
 } {
   inherit instanceSuffix instanceName;
 
-  initialize = ''
-    ${lib.concatMapStrings (user:
+  initialize =
+    lib.concatMapStrings (user:
       let
         fcrontab = builtins.getAttr user fcrontabPerUser;
         fcrontabFile = writeTextFile {
@@ -26,7 +27,9 @@ import ./default.nix {
       ''
         cp ${fcrontabFile} ${fcronSpoolDir}/${user}.orig
       ''
-    ) (builtins.attrNames fcrontabPerUser)}
-    ${initialize}
-  '';
+      + ''
+        ${lib.optionalString (!forceDisableUserChange) "${utillinux}/bin/runuser -u root -g ${instanceName} --"} fcrontab -c ${fcronEtcDir}/fcron.conf -u systab -z
+      ''
+    ) (builtins.attrNames fcrontabPerUser)
+    + initialize;
 }

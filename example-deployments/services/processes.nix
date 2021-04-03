@@ -127,7 +127,7 @@ rec {
     pkg = constructors.declarativeFcron {
       fcrontabPerUser = {
         systab = ''
-          @ 1 echo hello >> /tmp/hello
+          */1 * * * * echo hello >> /tmp/hello
         '';
       };
     };

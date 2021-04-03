@@ -74,7 +74,7 @@ in
 
   declarativeFcron = import ./fcron/declarative.nix {
     inherit createManagedProcess stateDir spoolDir runtimeDir tmpDir forceDisableUserChange;
-    inherit (pkgs) lib writeTextFile fcron;
+    inherit (pkgs) lib writeTextFile fcron utillinux;
   };
 
   hydra-evaluator = import ./hydra/hydra-evaluator.nix {

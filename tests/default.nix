@@ -27,6 +27,10 @@ in
     inherit pkgs processManagers profiles testService;
   };
 
+  fcron = import ./fcron {
+    inherit pkgs processManagers profiles testService;
+  };
+
   influxdb = import ./influxdb {
     inherit pkgs processManagers profiles testService;
   };
