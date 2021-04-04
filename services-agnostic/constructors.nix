@@ -8,6 +8,8 @@
 , libDir
 , tmpDir
 , forceDisableUserChange
+, callingUser ? null
+, callingGroup ? null
 , processManager
 , ids ? {}
 }:
@@ -68,12 +70,12 @@ in
   };
 
   fcron = import ./fcron {
-    inherit createManagedProcess stateDir spoolDir runtimeDir tmpDir forceDisableUserChange;
+    inherit createManagedProcess stateDir spoolDir runtimeDir tmpDir forceDisableUserChange callingUser callingGroup;
     inherit (pkgs) lib writeTextFile fcron;
   };
 
   declarativeFcron = import ./fcron/declarative.nix {
-    inherit createManagedProcess stateDir spoolDir runtimeDir tmpDir forceDisableUserChange;
+    inherit createManagedProcess stateDir spoolDir runtimeDir tmpDir forceDisableUserChange callingUser callingGroup;
     inherit (pkgs) lib writeTextFile fcron utillinux;
   };
 

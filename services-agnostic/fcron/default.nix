@@ -1,4 +1,4 @@
-{createManagedProcess, writeTextFile, lib, fcron, stateDir, runtimeDir, tmpDir, spoolDir, forceDisableUserChange}:
+{createManagedProcess, writeTextFile, lib, fcron, stateDir, runtimeDir, tmpDir, spoolDir, forceDisableUserChange, callingUser, callingGroup}:
 {instanceSuffix ? "", instanceName ? "fcron${instanceSuffix}", initialize ? ""}:
 
 let
@@ -26,7 +26,7 @@ let
   fcronPkg =
     if forceDisableUserChange then fcron.overrideAttrs (originalAttrs:
       originalAttrs // {
-        configureFlags = originalAttrs.configureFlags ++ [ "--with-run-non-privileged" "--with-rootname=unprivileged" "--with-rootgroup=users" "--with-username=unprivileged" "--with-groupname=users" ];
+        configureFlags = originalAttrs.configureFlags ++ [ "--with-run-non-privileged" "--with-rootname=${callingUser}" "--with-rootgroup=${callingGroup}" "--with-username=${callingUser}" "--with-groupname=${callingGroup}" ];
       }
     )
     else if user != "fcron" || group != "fcron" then fcron.overrideAttrs (originalAttrs:

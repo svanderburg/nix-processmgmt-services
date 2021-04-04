@@ -8,6 +8,8 @@
 , libDir ? "${stateDir}/lib"
 , tmpDir ? (if stateDir == "/var" then "/tmp" else "${stateDir}/tmp")
 , forceDisableUserChange ? false
+, callingUser ? null
+, callingGroup ? null
 , processManager
 }:
 
@@ -15,7 +17,7 @@ let
   ids = if builtins.pathExists ./ids.nix then (import ./ids.nix).ids else {};
 
   constructors = import ../../services-agnostic/constructors.nix {
-    inherit pkgs stateDir runtimeDir logDir tmpDir cacheDir spoolDir libDir forceDisableUserChange processManager ids;
+    inherit pkgs stateDir runtimeDir logDir tmpDir cacheDir spoolDir libDir forceDisableUserChange callingUser callingGroup processManager ids;
   };
 in
 rec {
