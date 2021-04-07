@@ -20,7 +20,7 @@
 , useSubstitutes ? true
 
 , postgresqlDBMS ? null
-, nix-daemon
+, nix-daemon ? null
 }:
 
 let
@@ -32,9 +32,11 @@ let
       notification_sender = ${notificationSender}
       max_servers = 25
       compress_num_threads = 0
-      ${lib.optionalString (logo != null) ''
-        hydra_logo = ${logo}
-      ''}
+    ''
+    + lib.optionalString (logo != null) ''
+      hydra_logo = ${logo}
+    ''
+    + ''
       gc_roots_dir = ${gcRootsDir}
       use-substitutes = ${if useSubstitutes then "1" else "0"}
     '';
@@ -47,35 +49,37 @@ createManagedProcess {
 
   initialize = ''
     ln -sfn ${hydraConf} ${baseDir}/hydra.conf
+    chmod 750 ${baseDir}
 
     mkdir -m 0700 -p ${baseDir}/www
     mkdir -p ${gcRootsDir}
-
-    ${lib.optionalString (!forceDisableUserChange) ''
-      chown ${user}:${hydraGroup} ${baseDir}/www
-      chown ${hydraUser}:${hydraGroup} ${gcRootsDir}
-    ''}
-
+  ''
+  + lib.optionalString (!forceDisableUserChange) ''
+    chown ${user}:${hydraGroup} ${baseDir}/www
+    chown ${hydraUser}:${hydraGroup} ${gcRootsDir}
+  ''
+  + ''
     chmod 2775 ${gcRootsDir}
+  ''
+  # Initialize the database if a PostgreSQL DBMS is provided as a (local) process dependency
+  + lib.optionalString (postgresqlDBMS != null) ''
+    if [ ! -e ${baseDir}/.db-created ]
+    then
+        count=1
 
-    ${lib.optionalString (postgresqlDBMS != null) ''
-      if [ ! -e ${baseDir}/.db-created ]
-      then
-          count=1
+        while [ ! -e ${postgresqlDBMS.socketFile} ] && [ $count -lt 10 ]
+        do
+            sleep 1
+            ((count++))
+        done
 
-          while [ ! -e ${postgresqlDBMS.socketFile} ] && [ $count -lt 10 ]
-          do
-              sleep 1
-              ((count++))
-          done
-
-          ${lib.optionalString (!forceDisableUserChange) "su ${postgresqlDBMS.postgresqlUsername} -c '"}createuser ${hydraUser}${lib.optionalString (!forceDisableUserChange) "'"}
-          ${lib.optionalString (!forceDisableUserChange) "su ${postgresqlDBMS.postgresqlUsername} -c '"}createdb -O ${hydraUser} ${hydraDatabase}${lib.optionalString (!forceDisableUserChange) "'"}
-          echo "create extension if not exists pg_trgm" | ${lib.optionalString (!forceDisableUserChange) "su ${postgresqlDBMS.postgresqlUsername} -c '"}psql ${hydraDatabase}${lib.optionalString (!forceDisableUserChange) "'"}
-          touch ${baseDir}/.db-created
-      fi
-    ''}
-
+        ${lib.optionalString (!forceDisableUserChange) "su ${postgresqlDBMS.postgresqlUsername} -c '"}${postgresql}/bin/createuser ${hydraUser}${lib.optionalString (!forceDisableUserChange) "'"}
+        ${lib.optionalString (!forceDisableUserChange) "su ${postgresqlDBMS.postgresqlUsername} -c '"}${postgresql}/bin/createdb -O ${hydraUser} ${hydraDatabase}${lib.optionalString (!forceDisableUserChange) "'"}
+        echo "create extension if not exists pg_trgm" | ${lib.optionalString (!forceDisableUserChange) "su ${postgresqlDBMS.postgresqlUsername} -c '"}${postgresql}/bin/psql ${hydraDatabase}${lib.optionalString (!forceDisableUserChange) "'"}
+        touch ${baseDir}/.db-created
+    fi
+  ''
+  + ''
     ${hydra}/bin/hydra-init
   '';
   foregroundProcess = "${hydra}/bin/hydra-server";
@@ -85,7 +89,8 @@ createManagedProcess {
     inherit baseDir dbi hydraDatabase hydraUser;
   };
 
-  dependencies = [ nix-daemon.pkg ] ++ lib.optional (postgresqlDBMS != null) postgresqlDBMS.pkg;
+  dependencies = lib.optional (nix-daemon != null) nix-daemon.pkg
+    ++ lib.optional (postgresqlDBMS != null) postgresqlDBMS.pkg;
 
   credentials = {
     groups = {

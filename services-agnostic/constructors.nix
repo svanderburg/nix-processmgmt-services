@@ -81,6 +81,7 @@ in
 
   hydra-evaluator = import ./hydra/hydra-evaluator.nix {
     inherit createManagedProcess;
+    inherit (pkgs) lib;
     hydra = pkgs.hydra-unstable;
   };
 

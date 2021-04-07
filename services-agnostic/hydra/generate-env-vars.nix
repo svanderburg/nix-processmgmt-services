@@ -8,5 +8,6 @@ in
   HYDRA_CONFIG = "${baseDir}/hydra.conf";
   HYDRA_DATA = baseDir;
   NIX_REMOTE = "daemon";
+  HOME = baseDir; # Add this to prevent the evaluator and queue runner to read from /root/.nix-defexpr
   PGPASSFILE = "${baseDir}/pgpass";
 }

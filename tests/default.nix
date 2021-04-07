@@ -31,6 +31,10 @@ in
     inherit pkgs processManagers profiles testService;
   };
 
+  hydra = import ./hydra {
+    inherit pkgs processManagers profiles testService;
+  };
+
   influxdb = import ./influxdb {
     inherit pkgs processManagers profiles testService;
   };

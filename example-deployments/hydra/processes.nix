@@ -4,15 +4,17 @@
 , runtimeDir ? "${stateDir}/run"
 , logDir ? "${stateDir}/log"
 , cacheDir ? "${stateDir}/cache"
+, spoolDir ? "${stateDir}/spool"
 , libDir ? "${stateDir}/lib"
 , tmpDir ? (if stateDir == "/var" then "/tmp" else "${stateDir}/tmp")
 , forceDisableUserChange ? false
 , processManager
+, includeNixDaemon ? false
 }:
 
 let
   constructors = import ../../services-agnostic/constructors.nix {
-    inherit pkgs stateDir runtimeDir logDir tmpDir cacheDir libDir forceDisableUserChange processManager;
+    inherit pkgs stateDir runtimeDir logDir tmpDir cacheDir spoolDir libDir forceDisableUserChange processManager;
   };
 
   instanceSuffix = "";
@@ -20,12 +22,15 @@ let
   hydraInstanceName = "hydra${instanceSuffix}";
   hydraQueueRunnerUser = "hydra-queue-runner${instanceSuffix}";
   hydraServerUser = "hydra-www${instanceSuffix}";
-in
-rec {
-  nix-daemon = {
-    pkg = constructors.nix-daemon;
-  };
 
+  # This process needs to be conditionally included
+  nix-daemon = if includeNixDaemon then {
+    pkg = constructors.nix-daemon;
+  } else null;
+in
+pkgs.lib.optionalAttrs includeNixDaemon {
+  inherit nix-daemon;
+} // rec {
   postgresql = rec {
     port = 5432;
     postgresqlUsername = "postgresql";
@@ -54,7 +59,7 @@ rec {
     port = 3000;
     hydraDatabase = hydraInstanceName;
     hydraGroup = hydraInstanceName;
-    baseDir = "${stateDir}/lib/${hydraInstanceName}";
+    baseDir = "${libDir}/${hydraInstanceName}";
     inherit hydraUser instanceSuffix;
 
     pkg = constructors.hydra-server {
@@ -67,6 +72,7 @@ rec {
   hydra-evaluator = {
     pkg = constructors.hydra-evaluator {
       inherit nix-daemon hydra-server;
+      postgresqlDBMS = postgresql;
     };
   };
 
@@ -74,11 +80,14 @@ rec {
     pkg = constructors.hydra-queue-runner {
       inherit nix-daemon hydra-server;
       user = hydraQueueRunnerUser;
+      postgresqlDBMS = postgresql;
     };
   };
 
-  apache = {
+  apache = rec {
+    port = 80;
     pkg = constructors.reverseProxyApache {
+      inherit port;
       dependency = hydra-server;
       serverAdmin = "admin@localhost";
     };
