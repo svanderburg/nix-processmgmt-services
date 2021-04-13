@@ -27,7 +27,10 @@ createManagedProcess {
     inherit stdenv lib writeTextFile nix-processmgmt processManager dysnomiaProperties dysnomiaContainers containerProviders extraDysnomiaContainersPath processManagerContainerSettings;
   };
   daemonExtraArgs = [ "--daemon" ];
-  dependencies = lib.optional (dbus-daemon != null) dbus-daemon.pkg
+  dependencies =
+    # If we use systemd, we should not add dbus-daemon as a dependency. It causes infinite recursion.
+    # Moreover, since D-Bus is already enabled for systemd, there is no reason to wait for it anyway.
+    lib.optional (dbus-daemon != null && processManager != "systemd") dbus-daemon.pkg
     ++ map (containerProvider: containerProvider.pkg) containerProviders;
 
   credentials = {

@@ -60,7 +60,7 @@ in
   };
 
   disnix-service = import ./disnix-service {
-    inherit createManagedProcess processManager nix-processmgmt ids;
+    inherit createManagedProcess nix-processmgmt ids processManager;
     inherit (pkgs) stdenv lib writeTextFile nix disnix dysnomia inetutils findutils;
   };
 

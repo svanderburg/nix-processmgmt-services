@@ -23,6 +23,22 @@ in
     inherit pkgs processManagers profiles testService;
   };
 
+  disnix = import ./disnix/bare {
+    inherit pkgs processManagers profiles testService;
+  };
+
+  disnix-with-apache-mysql = import ./disnix/apache-mysql {
+    inherit pkgs processManagers profiles testService;
+  };
+
+  disnix-with-tomcat-mysql = import ./disnix/tomcat-mysql {
+    inherit pkgs processManagers profiles testService;
+  };
+
+  disnix-with-tomcat-mysql-multi-instance = import ./disnix/tomcat-mysql-multi-instance {
+    inherit pkgs processManagers profiles testService;
+  };
+
   docker = import ./docker {
     inherit pkgs processManagers profiles testService;
   };

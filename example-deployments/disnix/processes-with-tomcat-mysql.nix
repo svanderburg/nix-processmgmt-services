@@ -9,6 +9,7 @@
 , tmpDir ? (if stateDir == "/var" then "/tmp" else "${stateDir}/tmp")
 , forceDisableUserChange ? false
 , processManager
+, enablePAM ? false
 }:
 
 let
@@ -23,9 +24,13 @@ let
   };
 in
 rec {
-  sshd = {
+  sshd = rec {
+    port = 22;
+
     pkg = constructors.sshd {
-      extraSSHDConfig = ''
+      inherit port;
+
+      extraSSHDConfig = pkgs.lib.optionalString enablePAM ''
         UsePAM yes
       '';
     };
@@ -52,8 +57,12 @@ rec {
     properties.requiresUniqueIdsFor = [ "uids" "gids" ];
   };
 
-  apache = {
+  apache = rec {
+    port = 80;
+
     pkg = constructors.basicAuthReverseProxyApache {
+      inherit port;
+
       dependency = tomcat;
       serverAdmin = "admin@localhost";
       targetProtocol = "ajp";
