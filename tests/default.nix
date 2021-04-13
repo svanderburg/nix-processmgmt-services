@@ -63,15 +63,15 @@ in
     inherit pkgs processManagers profiles testService;
   };
 
-  nginx = import ./nginx {
+  nginx = import ./nginx/simple-webapp {
     inherit pkgs processManagers profiles testService;
   };
 
-  nginx-reverse-proxy-hostbased = import ./nginx-reverse-proxy-hostbased {
+  nginx-reverse-proxy-hostbased = import ./nginx/reverse-proxy-hostbased {
     inherit pkgs processManagers profiles testService nix-processmgmt;
   };
 
-  nginx-reverse-proxy-pathbased = import ./nginx-reverse-proxy-pathbased {
+  nginx-reverse-proxy-pathbased = import ./nginx/reverse-proxy-pathbased {
     inherit pkgs processManagers profiles testService;
   };
 

@@ -13,7 +13,7 @@
 }:
 
 let
-  sharedConstructors = import ../../services-agnostic/constructors.nix {
+  sharedConstructors = import ../../../services-agnostic/constructors.nix {
     inherit pkgs stateDir runtimeDir logDir cacheDir spoolDir libDir tmpDir forceDisableUserChange processManager;
   };
 
