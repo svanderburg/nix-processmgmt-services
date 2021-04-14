@@ -94,4 +94,8 @@ in
   svnserve = import ./svnserve {
     inherit pkgs processManagers profiles testService;
   };
+
+  xinetd = import ./xinetd {
+    inherit pkgs processManagers profiles testService;
+  };
 }

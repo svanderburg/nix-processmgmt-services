@@ -182,4 +182,14 @@ in
     inherit createManagedProcess runtimeDir forceDisableUserChange;
     inherit (pkgs) lib subversion;
   };
+
+  xinetd = import ./xinetd {
+    inherit createManagedProcess runtimeDir tmpDir forceDisableUserChange;
+    inherit (pkgs) xinetd;
+  };
+
+  declarativeXinetd = import ./xinetd/declarative.nix {
+    inherit createManagedProcess runtimeDir tmpDir forceDisableUserChange;
+    inherit (pkgs) xinetd lib writeTextFile;
+  };
 }
