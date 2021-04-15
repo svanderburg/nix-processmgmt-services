@@ -1,0 +1,13 @@
+service telnet
+{
+    flags = REUSE
+    socket_type = stream
+    wait = no
+    user = ${if forceDisableUserChange then callingUser else "root"}
+    server = ${pkgs.inetutils}/libexec/telnetd
+    server_args = -E ${pkgs.bashInteractive}/bin/bash
+    disable = no
+    instances = 10
+    type = UNLISTED
+    port = ${toString port}
+}

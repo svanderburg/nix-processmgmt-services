@@ -30,7 +30,7 @@ import ./default.nix {
         }
 
       ''
-    ) (builtins.attrNames services);
-  }
-  + extraConfig;
+    ) (builtins.attrNames services)
+    + extraConfig;
+  };
 }

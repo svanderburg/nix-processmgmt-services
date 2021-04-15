@@ -192,4 +192,9 @@ in
     inherit createManagedProcess runtimeDir tmpDir forceDisableUserChange;
     inherit (pkgs) xinetd lib writeTextFile;
   };
+
+  extendableXinetd = import ./xinetd/extendable.nix {
+    inherit createManagedProcess runtimeDir tmpDir libDir forceDisableUserChange;
+    inherit (pkgs) xinetd writeTextFile;
+  };
 }

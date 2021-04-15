@@ -1,0 +1,13 @@
+service tftp
+{
+    socket_type = dgram
+    protocol = udp
+    bind = 127.0.0.1
+    wait = yes
+    user = ${if forceDisableUserChange then callingUser else "root"}
+    server = ${pkgs.inetutils}/libexec/tftpd
+    server_args = "-u " ${if forceDisableUserChange then callingUser else "nobody"}
+    disable = no
+    type = UNLISTED
+    port = ${toString port}
+}

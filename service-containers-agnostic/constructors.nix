@@ -97,4 +97,13 @@ in
       enableSubversionRepository = true;
     });
   };
+
+  extendableXinetd = import ./xinetd/extendable.nix {
+    inherit libDir;
+    inherit (pkgs) lib;
+    xinetdConstructorFun = constructors.extendableXinetd;
+    dysnomia = pkgs.dysnomia.override (origArgs: {
+      enableXinetdService = true;
+    });
+  };
 }

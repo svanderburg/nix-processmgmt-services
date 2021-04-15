@@ -95,7 +95,12 @@ in
     inherit pkgs processManagers profiles testService;
   };
 
-  xinetd = import ./xinetd {
+  xinetd = import ./xinetd/declarative {
     inherit pkgs processManagers profiles testService;
   };
+
+  xinetd-extendable = import ./xinetd/extendable {
+    inherit pkgs processManagers profiles testService;
+  };
+
 }
