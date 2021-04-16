@@ -132,12 +132,12 @@ in
     inherit (pkgs) lib nginx writeTextFile;
   };
 
-  nginxReverseProxyHostBased = import ./nginx/nginx-reverse-proxy-hostbased.nix {
+  nginxReverseProxyHostBased = import ./nginx/reverse-proxy-hostbased.nix {
     inherit createManagedProcess stateDir runtimeDir cacheDir forceDisableUserChange;
     inherit (pkgs) stdenv lib writeTextFile nginx;
   };
 
-  nginxReverseProxyPathBased = import ./nginx/nginx-reverse-proxy-pathbased.nix {
+  nginxReverseProxyPathBased = import ./nginx/reverse-proxy-pathbased.nix {
     inherit createManagedProcess stateDir runtimeDir cacheDir forceDisableUserChange;
     inherit (pkgs) stdenv lib writeTextFile nginx;
   };
@@ -172,7 +172,7 @@ in
     inherit (pkgs.pythonPackages) supervisor;
   };
 
-  extendableSupervisord = import ./supervisord/extendable-supervisord.nix {
+  extendableSupervisord = import ./supervisord/extendable.nix {
     inherit createManagedProcess libDir runtimeDir logDir;
     inherit (pkgs) writeTextFile;
     inherit (pkgs.pythonPackages) supervisor;

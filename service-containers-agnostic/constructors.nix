@@ -81,7 +81,7 @@ in
     });
   };
 
-  extendableSupervisord = import ./supervisord/extendable-supervisord.nix {
+  extendableSupervisord = import ./supervisord/extendable.nix {
     inherit libDir;
     inherit (pkgs) lib;
     supervisordConstructorFun = constructors.extendableSupervisord;
