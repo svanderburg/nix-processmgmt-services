@@ -5,10 +5,11 @@
 , scanDir ? "${runtimeDir}/service${instanceSuffix}"
 , logUser ? "s6-log${instanceSuffix}"
 , logGroup ? "s6-log${instanceSuffix}"
+, postInstall ? ""
 }:
 
 createManagedProcess {
-  inherit instanceName;
+  inherit instanceName postInstall;
 
   path = [ s6 ];
   foregroundProcess = "${s6}/bin/s6-svscan";

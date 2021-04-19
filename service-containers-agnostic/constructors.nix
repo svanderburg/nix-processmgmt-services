@@ -47,6 +47,14 @@ in
     });
   };
 
+  docker = import ./docker {
+    inherit (pkgs) lib;
+    dockerConstructorFun = constructors.docker;
+    dysnomia = pkgs.dysnomia.override (origArgs: {
+      enableDockerContainer = true;
+    });
+  };
+
   simpleInfluxdb = import ./influxdb/simpleinfluxdb.nix {
     influxdbConstructorFun = constructors.simpleInfluxdb;
     dysnomia = pkgs.dysnomia.override (origArgs: {
@@ -87,6 +95,15 @@ in
     supervisordConstructorFun = constructors.extendableSupervisord;
     dysnomia = pkgs.dysnomia.override (origArgs: {
       enableSupervisordProgram = true;
+    });
+  };
+
+  s6-svscan = import ./s6-svscan {
+    inherit libDir runtimeDir;
+    inherit (pkgs) lib;
+    s6-svscanConstructorFun = constructors.s6-svscan;
+    dysnomia = pkgs.dysnomia.override (origArgs: {
+      enableS6RCService = true;
     });
   };
 

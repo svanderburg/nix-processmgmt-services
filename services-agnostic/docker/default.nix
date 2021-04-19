@@ -1,12 +1,13 @@
 {createManagedProcess, docker, kmod, runtimeDir, libDir}:
-{instanceSuffix ? "", instanceName ? "docker${instanceSuffix}", extraArgs ? []}:
+{instanceSuffix ? "", instanceName ? "docker${instanceSuffix}", extraArgs ? [], postInstall ? ""}:
 
 let
   user = instanceName;
   group = instanceName;
 in
 createManagedProcess {
-  inherit instanceName;
+  inherit instanceName postInstall;
+
   foregroundProcess = "${docker}/bin/dockerd";
   args = [
     "--group=${group}"
