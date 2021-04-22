@@ -164,7 +164,7 @@ in
 
   s6-svscan = import ./s6-svscan {
     inherit createManagedProcess runtimeDir;
-    inherit (pkgs) s6;
+    inherit (pkgs) s6 execline;
   };
 
   supervisord = import ./supervisord {
