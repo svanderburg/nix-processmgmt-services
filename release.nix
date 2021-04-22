@@ -10,6 +10,6 @@ let
 in
 {
   tests = import ./tests {
-    inherit pkgs system nix-processmgmt processManagers profiles;
+    inherit nixpkgs system nix-processmgmt processManagers profiles;
   };
 }
