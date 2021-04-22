@@ -102,5 +102,4 @@ in
   xinetd-extendable = import ./xinetd/extendable {
     inherit pkgs processManagers profiles testService;
   };
-
 }
