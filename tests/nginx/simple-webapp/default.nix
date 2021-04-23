@@ -13,7 +13,9 @@ testService {
 
   tests = {instanceName, instance, ...}:
     ''
+      # fmt: off
       machine.succeed("curl --fail http://localhost:${toString instance.port} | grep 'Hello world from ${instance.from}!'")
+      # fmt: on
     '';
 
   inherit processManagers profiles;
