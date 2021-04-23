@@ -10,17 +10,18 @@
 , forceDisableUserChange ? false
 , processManager
 , enablePAM ? false
+, nix-processmgmt ? ../../../nix-processmgmt
 }:
 
 let
   ids = if builtins.pathExists ./ids-tomcat-mysql-multi-instance.nix then (import ./ids-tomcat-mysql-multi-instance.nix).ids else {};
 
   constructors = import ../../services-agnostic/constructors.nix {
-    inherit pkgs stateDir runtimeDir logDir tmpDir cacheDir spoolDir libDir forceDisableUserChange processManager ids;
+    inherit pkgs stateDir runtimeDir logDir tmpDir cacheDir spoolDir libDir forceDisableUserChange processManager ids nix-processmgmt;
   };
 
   containerProviderConstructors = import ../../service-containers-agnostic/constructors.nix {
-    inherit pkgs stateDir runtimeDir logDir tmpDir cacheDir spoolDir libDir forceDisableUserChange processManager ids;
+    inherit pkgs stateDir runtimeDir logDir tmpDir cacheDir spoolDir libDir forceDisableUserChange processManager ids nix-processmgmt;
   };
 in
 rec {

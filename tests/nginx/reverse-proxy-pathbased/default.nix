@@ -1,7 +1,11 @@
-{ pkgs, testService, processManagers, profiles }:
+{ pkgs, testService, processManagers, profiles, nix-processmgmt }:
 
 testService {
   exprFile = ./processes.nix;
+  extraParams = {
+    inherit nix-processmgmt;
+  };
+
   nixosConfig = {
     virtualisation.memorySize = 1024;
   };

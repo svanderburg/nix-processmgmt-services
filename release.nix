@@ -5,9 +5,6 @@
 , profiles ? [ "privileged" "unprivileged" ]
 }:
 
-let
-  pkgs = import nixpkgs {};
-in
 {
   tests = import ./tests {
     inherit nixpkgs system nix-processmgmt processManagers profiles;

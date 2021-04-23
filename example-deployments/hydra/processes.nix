@@ -10,11 +10,12 @@
 , forceDisableUserChange ? false
 , processManager
 , includeNixDaemon ? false
+, nix-processmgmt ? ../../../nix-processmgmt
 }:
 
 let
   constructors = import ../../services-agnostic/constructors.nix {
-    inherit pkgs stateDir runtimeDir logDir tmpDir cacheDir spoolDir libDir forceDisableUserChange processManager;
+    inherit pkgs stateDir runtimeDir logDir tmpDir cacheDir spoolDir libDir forceDisableUserChange processManager nix-processmgmt;
   };
 
   instanceSuffix = "";

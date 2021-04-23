@@ -1,4 +1,4 @@
-{ pkgs, testService, processManagers, profiles }:
+{ pkgs, testService, processManagers, profiles, nix-processmgmt }:
 
 testService {
   exprFile = ./processes.nix;
@@ -7,6 +7,10 @@ testService {
     virtualisation.memorySize = 1024;
     virtualisation.diskSize = 8192;
   };
+  extraParams = {
+    inherit nix-processmgmt;
+  };
+
   readiness = {instanceName, instance, ...}:
     ''
       machine.wait_for_open_port(${toString instance.port})

@@ -1,10 +1,13 @@
-{ pkgs, testService, processManagers, profiles }:
+{ pkgs, testService, processManagers, profiles, nix-processmgmt }:
 
 let
   env = "NIX_PATH='nixpkgs=${<nixpkgs>}' DISNIX_CLIENT_INTERFACE=disnix-soap-client DISNIX_TARGET_PROPERTY=targetEPR DISNIX_SOAP_CLIENT_USERNAME=admin DISNIX_SOAP_CLIENT_PASSWORD=secret";
 in
 testService {
   exprFile = ../../../example-deployments/disnix/processes-with-tomcat-mysql.nix;
+  extraParams = {
+    inherit nix-processmgmt;
+  };
   systemPackages = [ pkgs.disnix pkgs.DisnixWebService ];
 
   readiness = {instanceName, instance, ...}:

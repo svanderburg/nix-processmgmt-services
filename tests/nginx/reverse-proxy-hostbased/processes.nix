@@ -1,6 +1,5 @@
 { pkgs ? import <nixpkgs> { inherit system; }
 , system ? builtins.currentSystem
-, nix-processmgmt
 , stateDir ? "/var"
 , runtimeDir ? "${stateDir}/run"
 , logDir ? "${stateDir}/log"
@@ -10,11 +9,12 @@
 , tmpDir ? (if stateDir == "/var" then "/tmp" else "${stateDir}/tmp")
 , forceDisableUserChange ? false
 , processManager
+, nix-processmgmt ? ../../../../nix-processmgmt
 }:
 
 let
   sharedConstructors = import ../../../services-agnostic/constructors.nix {
-    inherit pkgs stateDir runtimeDir logDir cacheDir spoolDir libDir tmpDir forceDisableUserChange processManager;
+    inherit pkgs stateDir runtimeDir logDir cacheDir spoolDir libDir tmpDir forceDisableUserChange processManager nix-processmgmt;
   };
 
   constructors = import "${nix-processmgmt}/examples/webapps-agnostic/constructors/constructors.nix" {

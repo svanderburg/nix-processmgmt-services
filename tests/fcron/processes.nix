@@ -11,11 +11,12 @@
 , callingUser ? null
 , callingGroup ? null
 , processManager
+, nix-processmgmt ? ../../../nix-processmgmt
 }:
 
 let
   constructors = import ../../services-agnostic/constructors.nix {
-    inherit pkgs stateDir runtimeDir logDir tmpDir cacheDir libDir spoolDir forceDisableUserChange callingUser callingGroup processManager;
+    inherit pkgs stateDir runtimeDir logDir tmpDir cacheDir libDir spoolDir forceDisableUserChange callingUser callingGroup processManager nix-processmgmt;
   };
 in
 rec {

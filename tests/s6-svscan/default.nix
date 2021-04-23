@@ -1,4 +1,4 @@
-{ pkgs, testService, processManagers, profiles }:
+{ pkgs, testService, processManagers, profiles, nix-processmgmt }:
 
 let
   generateTestExecutable = instanceName:
@@ -42,6 +42,9 @@ let
 in
 testService {
   exprFile = ./processes.nix;
+  extraParams = {
+    inherit nix-processmgmt;
+  };
   systemPackages = [ pkgs.s6-rc ];
 
   readiness = {instanceName, instance, runtimeDir, ...}:

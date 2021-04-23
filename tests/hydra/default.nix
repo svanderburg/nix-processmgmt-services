@@ -1,4 +1,4 @@
-{ pkgs, testService, processManagers, profiles }:
+{ pkgs, testService, processManagers, profiles, nix-processmgmt }:
 
 let
   node-hydra-connector = (import ./nodepkgs {
@@ -63,6 +63,9 @@ let
 in
 testService {
   exprFile = ../../example-deployments/hydra/processes.nix;
+  extraParams = {
+    inherit nix-processmgmt;
+  };
   nixosConfig = {
     virtualisation.memorySize = 1024;
     virtualisation.diskSize = 8192;
@@ -161,5 +164,8 @@ testService {
       )
     '';
 
-  inherit processManagers profiles;
+  inherit processManagers;
+
+  # We don't support unprivileged user deployments
+  profiles = builtins.filter (profile: profile == "privileged") profiles;
 }

@@ -10,13 +10,14 @@
 , forceDisableUserChange ? false
 , processManager
 , enablePAM ? false
+, nix-processmgmt ? ../../../nix-processmgmt
 }:
 
 let
   ids = if builtins.pathExists ./ids-bare.nix then (import ./ids-bare.nix).ids else {};
 
   constructors = import ../../services-agnostic/constructors.nix {
-    inherit pkgs stateDir runtimeDir logDir tmpDir cacheDir spoolDir libDir forceDisableUserChange processManager ids;
+    inherit pkgs stateDir runtimeDir logDir tmpDir cacheDir spoolDir libDir forceDisableUserChange processManager ids nix-processmgmt;
   };
 in
 rec {

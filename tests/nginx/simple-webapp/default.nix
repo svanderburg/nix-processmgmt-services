@@ -1,7 +1,10 @@
-{ pkgs, testService, processManagers, profiles }:
+{ pkgs, testService, processManagers, profiles, nix-processmgmt }:
 
 testService {
   exprFile = ./processes.nix;
+  extraParams = {
+    inherit nix-processmgmt;
+  };
 
   readiness = {instanceName, instance, ...}:
     ''

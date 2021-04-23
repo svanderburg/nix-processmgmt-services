@@ -1,10 +1,13 @@
-{ pkgs, testService, processManagers, profiles }:
+{ pkgs, testService, processManagers, profiles, nix-processmgmt }:
 
 let
   env = "NIX_PATH='nixpkgs=${<nixpkgs>}' SSH_OPTS='-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' DISNIX_REMOTE_CLIENT=disnix-client";
 in
 testService {
   exprFile = ../../../example-deployments/disnix/processes-bare.nix;
+  extraParams = {
+    inherit nix-processmgmt;
+  };
   systemPackages = [ pkgs.disnix ];
 
   initialTests = {forceDisableUserChange, ...}:
