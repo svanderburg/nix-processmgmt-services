@@ -1,4 +1,4 @@
-{createManagedProcess, lib, writeTextFile, mongodb, runtimeDir, stateDir, forceDisableUserChange}:
+{createManagedProcess, lib, writeTextFile, mongodb, tmpDir, stateDir, forceDisableUserChange}:
 
 { instanceSuffix ? ""
 , instanceName ? "mongodb${instanceSuffix}"
@@ -13,7 +13,7 @@ let
   group = instanceName;
 in
 import ./default.nix {
-  inherit createManagedProcess mongodb runtimeDir;
+  inherit createManagedProcess mongodb tmpDir;
 } {
   inherit instanceName postInstall;
   configFile = writeTextFile {

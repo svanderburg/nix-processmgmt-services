@@ -108,12 +108,12 @@ in
   };
 
   mongodb = import ./mongodb {
-    inherit createManagedProcess runtimeDir;
+    inherit createManagedProcess tmpDir;
     inherit (pkgs) mongodb;
   };
 
   simpleMongodb = import ./mongodb/simplemongodb.nix {
-    inherit createManagedProcess runtimeDir stateDir forceDisableUserChange;
+    inherit createManagedProcess tmpDir stateDir forceDisableUserChange;
     inherit (pkgs) lib mongodb writeTextFile;
   };
 

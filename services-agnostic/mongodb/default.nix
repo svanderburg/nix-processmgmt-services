@@ -1,4 +1,4 @@
-{createManagedProcess, mongodb, runtimeDir}:
+{createManagedProcess, mongodb, tmpDir}:
 
 { instanceSuffix ? ""
 , instanceName ? "mongodb${instanceSuffix}"
@@ -10,13 +10,14 @@
 let
   user = instanceName;
   group = instanceName;
+  pidFile = "${tmpDir}/${instanceName}.pid";
 in
 createManagedProcess {
-  inherit instanceName initialize postInstall;
+  inherit instanceName initialize pidFile postInstall;
 
   process = "${mongodb}/bin/mongod";
   args = [ "--config" configFile ];
-  daemonExtraArgs = [ "--fork" "--pidfilepath" "${runtimeDir}/${instanceName}.pid" ];
+  daemonExtraArgs = [ "--fork" "--pidfilepath" pidFile ];
   user = instanceName;
 
   credentials = {
