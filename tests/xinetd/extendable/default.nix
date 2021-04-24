@@ -30,7 +30,6 @@ testService {
         };
       in
       ''
-        machine.succeed("mkdir -p ${stateDir}/lib/${instanceName}/xinetd.d")
         machine.succeed(
             "cp ${tftpService} ${stateDir}/lib/${instanceName}/xinetd.d"
         )
@@ -66,7 +65,6 @@ testService {
         };
       in
       ''
-        machine.succeed("mkdir -p ${stateDir}/lib/${instanceName}/xinetd.d")
         machine.succeed(
             "cp ${telnetService} ${stateDir}/lib/${instanceName}/xinetd.d"
         )

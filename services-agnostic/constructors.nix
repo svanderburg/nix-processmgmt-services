@@ -194,7 +194,7 @@ in
   };
 
   extendableXinetd = import ./xinetd/extendable.nix {
-    inherit createManagedProcess runtimeDir tmpDir libDir forceDisableUserChange;
-    inherit (pkgs) xinetd writeTextFile;
+    inherit createManagedProcess runtimeDir tmpDir libDir forceDisableUserChange callingUser;
+    inherit (pkgs) lib xinetd writeTextFile;
   };
 }

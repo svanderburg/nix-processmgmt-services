@@ -1,14 +1,11 @@
 {createManagedProcess, xinetd, runtimeDir, tmpDir, forceDisableUserChange}:
-{instanceSuffix ? "", instanceName ? "xinetd${instanceSuffix}", configFile}:
+{instanceSuffix ? "", instanceName ? "xinetd${instanceSuffix}", initialize ? "", configFile}:
 
-let
-  pidFile = if forceDisableUserChange then "${tmpDir}/${instanceName}.pid" else "${runtimeDir}/${instanceName}.pid";
-in
 createManagedProcess {
-  inherit instanceName;
+  inherit instanceName initialize;
   process = "${xinetd}/bin/xinetd";
 
-  args = [ "-f" configFile "-pidfile" pidFile ];
+  args = [ "-f" configFile "-pidfile" "${runtimeDir}/${instanceName}.pid" ];
   foregroundProcessExtraArgs = [ "-dontfork" ];
 
   overrides = {
