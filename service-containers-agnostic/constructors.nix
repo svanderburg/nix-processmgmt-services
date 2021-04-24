@@ -38,7 +38,7 @@ in
   };
 
   disnixAppservingTomcat = import ./apache-tomcat/disnix-appserving-tomcat.nix {
-    inherit stateDir;
+    inherit stateDir processManager;
     inherit (pkgs) lib libmatthew_java dbus_java DisnixWebService;
     tomcat = pkgs.tomcat9;
     tomcatConstructorFun = constructors.simpleAppservingTomcat;

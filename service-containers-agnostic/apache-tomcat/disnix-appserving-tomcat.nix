@@ -1,4 +1,4 @@
-{tomcatConstructorFun, lib, tomcat, libmatthew_java, dbus_java, DisnixWebService, dysnomia, stateDir}:
+{tomcatConstructorFun, lib, tomcat, libmatthew_java, dbus_java, DisnixWebService, dysnomia, stateDir, processManager}:
 
 {dbus-daemon, ...}@args:
 
@@ -14,5 +14,8 @@ import ./simple-appserving-tomcat.nix {
    "${dbus_java}/share/java/dbus.jar"
   ];
   webapps = instanceArgs.webapps or [ tomcat.webapps ] ++ [ DisnixWebService ];
-  dependencies = instanceArgs.dependencies or [] ++ [ dbus-daemon.pkg ];
+  dependencies = instanceArgs.dependencies or []
+    # If we use systemd, we should not add dbus-daemon as a dependency. It causes infinite recursion.
+    # Moreover, since D-Bus is already enabled for systemd, there is no reason to wait for it anyway.
+    ++ lib.optional (dbus-daemon != null && processManager != "systemd") dbus-daemon.pkg;
 })
