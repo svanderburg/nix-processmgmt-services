@@ -197,4 +197,14 @@ in
     inherit createManagedProcess runtimeDir tmpDir libDir forceDisableUserChange callingUser;
     inherit (pkgs) lib xinetd writeTextFile;
   };
+
+  vsftpd = import ./vsftpd {
+    inherit createManagedProcess;
+    inherit (pkgs) vsftpd;
+  };
+
+  simpleVsftpd = import ./vsftpd/simple.nix {
+    inherit createManagedProcess forceDisableUserChange logDir libDir callingUser callingGroup;
+    inherit (pkgs) stdenv vsftpd writeTextFile lib;
+  };
 }

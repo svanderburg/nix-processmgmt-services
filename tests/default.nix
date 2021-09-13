@@ -104,4 +104,8 @@ in
   xinetd-extendable = import ./xinetd/extendable {
     inherit pkgs processManagers profiles testService nix-processmgmt;
   };
+
+  vsftpd = import ./vsftpd {
+    inherit pkgs processManagers profiles testService nix-processmgmt;
+  };
 }
