@@ -5,6 +5,8 @@
 , instanceName ? "nginx${instanceSuffix}"
 , documentRoot ? ../http-server-common/webapp
 , workerConnections ? 190000
+, extraConfig ? ""
+, extraHTTPConfig ? ""
 }:
 
 let
@@ -48,7 +50,11 @@ import ./default.nix {
           listen ${toString port};
           root ${documentRoot};
         }
+
+        ${extraHTTPConfig}
       }
+
+      ${extraConfig}
     '';
   };
 }
