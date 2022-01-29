@@ -106,7 +106,7 @@ import ./default.nix {
         '' else throw "Unknown type for module!"
       ) modules}
       ${lib.optionalString enablePHP ''
-        LoadModule php7_module ${php}/modules/libphp7.so
+        LoadModule php_module ${php}/modules/libphp.so
       ''}
 
       ServerAdmin ${serverAdmin}
