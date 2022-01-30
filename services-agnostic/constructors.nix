@@ -207,4 +207,9 @@ in
     inherit createManagedProcess forceDisableUserChange logDir libDir callingUser callingGroup;
     inherit (pkgs) stdenv vsftpd writeTextFile lib;
   };
+
+  agetty = import ./agetty {
+    inherit createManagedProcess;
+    inherit (pkgs) util-linux;
+  };
 }
