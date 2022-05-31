@@ -30,7 +30,7 @@ testService {
   extraParams = {
     inherit nix-processmgmt;
   };
-  systemPackages = [ pkgs.pythonPackages.supervisor ];
+  systemPackages = [ pkgs.python3Packages.supervisor ];
 
   readiness = {instanceName, instance, ...}:
     ''

@@ -44,7 +44,7 @@ createManagedProcess {
 
     if [ "$found" != "1" ]
     then
-        echo "ERRORDatabase was still not created!" >&2
+        echo "ERROR: Database was still not created!" >&2
         exit 1
     fi
   '';
