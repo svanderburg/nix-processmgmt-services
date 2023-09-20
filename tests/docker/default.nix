@@ -1,6 +1,7 @@
 { pkgs, testService, processManagers, profiles, nix-processmgmt }:
 
 testService {
+  name = "docker";
   exprFile = ./processes.nix;
   extraParams = {
     inherit nix-processmgmt;

@@ -4,6 +4,7 @@ let
   env = "NIX_PATH='nixpkgs=${<nixpkgs>}' DISNIX_CLIENT_INTERFACE=disnix-soap-client DISNIX_TARGET_PROPERTY=targetEPR DISNIX_SOAP_CLIENT_USERNAME=admin DISNIX_SOAP_CLIENT_PASSWORD=secret";
 in
 testService {
+  name = "disnix-with-tomcat-mysql";
   exprFile = ../../../example-deployments/disnix/processes-with-tomcat-mysql.nix;
   extraParams = {
     inherit nix-processmgmt;

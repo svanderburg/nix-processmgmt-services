@@ -1,6 +1,7 @@
 { pkgs, testService, processManagers, profiles, nix-processmgmt }:
 
 testService {
+  name = "influxdb";
   exprFile = ./processes.nix;
   systemPackages = [ pkgs.influxdb ];
   extraParams = {

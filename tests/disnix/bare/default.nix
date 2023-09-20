@@ -4,6 +4,7 @@ let
   env = "NIX_PATH='nixpkgs=${<nixpkgs>}' SSH_OPTS='-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' DISNIX_REMOTE_CLIENT=disnix-client";
 in
 testService {
+  name = "disnix";
   exprFile = ../../../example-deployments/disnix/processes-bare.nix;
   extraParams = {
     inherit nix-processmgmt;

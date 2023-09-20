@@ -26,6 +26,7 @@ let
     };
 in
 testService {
+  name = "supervisord";
   exprFile = ./processes.nix;
   extraParams = {
     inherit nix-processmgmt;

@@ -4,6 +4,7 @@ let
   env = "NIX_PATH='nixpkgs=${<nixpkgs>}' SSH_OPTS='-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' DISNIX_REMOTE_CLIENT=disnix-client";
 in
 testService {
+  name = "disnix-with-apache-mysql";
   exprFile = ../../../example-deployments/disnix/processes-with-apache-mysql.nix;
   extraParams = {
     inherit nix-processmgmt;

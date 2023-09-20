@@ -15,6 +15,11 @@
 }:
 
 let
+  phpPackage = php.override {
+    apxs2Support = true;
+    inherit apacheHttpd;
+  };
+
   user = instanceName;
   group = instanceName;
 
@@ -51,8 +56,8 @@ let
       preferLocalBuild = true;
     }
     ''
-      cat ${php}/etc/php.ini > $out
-      cat ${php.phpIni} > $out
+      cat ${phpPackage}/etc/php.ini > $out
+      cat ${phpPackage.phpIni} > $out
     '';
 in
 import ./default.nix {
@@ -106,7 +111,7 @@ import ./default.nix {
         '' else throw "Unknown type for module!"
       ) modules}
       ${lib.optionalString enablePHP ''
-        LoadModule php_module ${php}/modules/libphp.so
+        LoadModule php_module ${phpPackage}/modules/libphp.so
       ''}
 
       ServerAdmin ${serverAdmin}

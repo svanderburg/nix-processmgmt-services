@@ -41,6 +41,7 @@ let
     };
 in
 testService {
+  name = "s6-svscan";
   exprFile = ./processes.nix;
   extraParams = {
     inherit nix-processmgmt;

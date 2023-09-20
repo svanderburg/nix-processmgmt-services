@@ -62,6 +62,7 @@ let
   };
 in
 testService {
+  name = "hydra";
   exprFile = ../../example-deployments/hydra/processes.nix;
   extraParams = {
     inherit nix-processmgmt;

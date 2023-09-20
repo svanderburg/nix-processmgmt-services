@@ -1,6 +1,7 @@
 { pkgs, testService, processManagers, profiles, nix-processmgmt }:
 
 testService {
+  name = "nginx-reverse-proxy-hostbased";
   exprFile = ./processes.nix;
   extraParams = {
     inherit nix-processmgmt;

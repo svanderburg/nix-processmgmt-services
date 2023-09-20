@@ -1,6 +1,7 @@
 { pkgs, testService, processManagers, profiles, nix-processmgmt }:
 
 testService {
+  name = "mongodb";
   exprFile = ./processes.nix;
   systemPackages = [ pkgs.mongodb ];
   nixosConfig = {

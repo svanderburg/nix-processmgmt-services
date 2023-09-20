@@ -1,6 +1,7 @@
 { pkgs, testService, processManagers, profiles, nix-processmgmt }:
 
 testService {
+  name = "sshd";
   exprFile = ./processes.nix;
   extraParams = {
     inherit nix-processmgmt;
@@ -32,11 +33,11 @@ testService {
     # Make a special exception for the first instance running in privileged mode. It should be connectible with the default settings
     if instanceName == "sshd" && !forceDisableUserChange then ''
       machine.succeed(
-          "ssh -i key -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no localhost $(type -p ls) /"
+          "ssh -i key -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no localhost $(type -p ls) / >&2"
       )
     '' else ''
       machine.succeed(
-          "${pkgs.lib.optionalString forceDisableUserChange "su unprivileged -c '"}ssh -p ${toString instance.port} -i key -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no localhost $(type -p ls) /${pkgs.lib.optionalString forceDisableUserChange "'"}"
+          "${pkgs.lib.optionalString forceDisableUserChange "su unprivileged -c '"}ssh -p ${toString instance.port} -i key -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no localhost $(type -p ls) /${pkgs.lib.optionalString forceDisableUserChange "'"} >&2"
       )
     '';
 

@@ -1,13 +1,14 @@
 { pkgs, testService, processManagers, profiles, nix-processmgmt }:
 
 testService {
+  name = "xinetd-extendable";
   exprFile = ./processes.nix;
   extraParams = {
     inherit nix-processmgmt;
   };
   systemPackages = [ pkgs.inetutils ];
 
-  tests = {instanceName, instance, stateDir, runtimeDir, forceDisableUserChange, ...}:
+  tests = {instanceName, instance, processManager, stateDir, runtimeDir, forceDisableUserChange, ...}:
     if instanceName == "xinetd-primary" then
       let
         tftpService = pkgs.writeTextFile {
@@ -33,8 +34,27 @@ testService {
         machine.succeed(
             "cp ${tftpService} ${stateDir}/lib/${instanceName}/xinetd.d"
         )
-        machine.succeed("kill -HUP $(cat ${runtimeDir}/${instanceName}.pid)")
 
+      ''
+      + (if processManager == "sysvinit" then
+        ''
+          machine.succeed("kill -HUP $(cat ${runtimeDir}/${instanceName}.pid)")
+        ''
+        else if processManager == "systemd" then
+        ''
+          machine.succeed("systemctl restart nix-process-${instanceName}")
+        ''
+        else if processManager == "supervisord" then
+        ''
+          machine.succeed("supervisorctl restart ${instanceName}")
+        ''
+        else if processManager == "s6-rc" then
+        ''
+          machine.succeed("s6-rc -d change ${instanceName}")
+          machine.succeed("s6-rc -u change ${instanceName}")
+        ''
+        else throw "Process manager not supported: ${processManager}")
+      + ''
         machine.succeed("echo hello > ${stateDir}/hello.txt")
         # fmt: off
         machine.succeed(

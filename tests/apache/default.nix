@@ -1,6 +1,7 @@
 { pkgs, testService, processManagers, profiles, nix-processmgmt }:
 
 testService {
+  name = "apache";
   exprFile = ./processes.nix;
   extraParams = {
     inherit nix-processmgmt;
@@ -13,7 +14,7 @@ testService {
 
   tests = {instanceName, instance, ...}:
     ''
-      machine.succeed("curl --fail http://localhost:${toString instance.port} | grep 'Hello world!'")
+      machine.succeed("curl --fail http://localhost:${toString instance.port} | grep 'Hello world'")
     '';
 
   inherit processManagers profiles;

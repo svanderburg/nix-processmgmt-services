@@ -39,7 +39,7 @@ let
     inherit processManager;
   };
 
-  processManagerContainer = lib.recursiveUpdate (stdenv.lib.optionalAttrs (processManager == "supervisord") {
+  processManagerContainer = lib.recursiveUpdate (lib.optionalAttrs (processManager == "supervisord") {
     supervisord-program = {
       supervisordTargetDir = "/etc/supervisor/conf.d";
     };
