@@ -3,6 +3,10 @@
 { instanceSuffix ? "", instanceName ? "postgresql${instanceSuffix}"
 , containerName ? "postgresql-database${instanceSuffix}"
 , port ? 5432
+, authentication ? null
+, identMap ? null
+, enableTCPIP ? false
+, settings ? {}
 , type ? null
 , properties ? {}
 }:
@@ -11,7 +15,7 @@ let
   username = instanceName;
 
   pkg = postgresqlConstructorFun {
-    inherit instanceName instanceSuffix port;
+    inherit instanceName instanceSuffix port authentication identMap enableTCPIP settings;
     postInstall = ''
       # Add Dysnomia container configuration file for PostgreSQL
       mkdir -p $out/etc/dysnomia/containers

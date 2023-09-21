@@ -89,6 +89,15 @@ in
     });
   };
 
+  simplePostgresql = import ./postgresql/simplepostgresql.nix {
+    inherit runtimeDir;
+    inherit (pkgs) lib;
+    postgresqlConstructorFun = constructors.simplePostgresql;
+    dysnomia = pkgs.dysnomia.override (origArgs: {
+      enablePostgreSQLDatabase = true;
+    });
+  };
+
   extendableSupervisord = import ./supervisord/extendable.nix {
     inherit libDir;
     inherit (pkgs) lib;
