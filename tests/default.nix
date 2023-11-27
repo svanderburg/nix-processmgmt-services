@@ -45,6 +45,10 @@ in
     inherit pkgs processManagers profiles testService nix-processmgmt;
   };
 
+  eris-server = import ./eris-server {
+    inherit pkgs processManagers profiles testService nix-processmgmt;
+  };
+
   fcron = import ./fcron {
     inherit pkgs processManagers profiles testService nix-processmgmt;
   };

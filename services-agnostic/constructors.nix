@@ -212,4 +212,9 @@ in
     inherit createManagedProcess;
     inherit (pkgs) util-linux;
   };
+
+  eris-server = import ./eris-server {
+    inherit createManagedProcess;
+    inherit (pkgs) lib eris-go;
+  };
 }
