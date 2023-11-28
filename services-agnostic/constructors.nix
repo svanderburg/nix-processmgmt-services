@@ -25,6 +25,11 @@ in
     inherit (pkgs) apacheHttpd;
   };
 
+  nncp = import ./nncp {
+    inherit createManagedProcess;
+    inherit (pkgs) lib nncp;
+  };
+
   simpleWebappApache = import ./apache/simple-webapp-apache.nix {
     inherit createManagedProcess logDir cacheDir runtimeDir forceDisableUserChange;
     inherit (pkgs) lib runCommand apacheHttpd php writeTextFile;
