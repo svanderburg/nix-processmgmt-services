@@ -212,4 +212,9 @@ in
     inherit createManagedProcess;
     inherit (pkgs) util-linux;
   };
+
+  yggdrasil = import ./yggdrasil {
+    inherit createManagedProcess runtimeDir;
+    inherit (pkgs) lib yggdrasil;
+  };
 }
