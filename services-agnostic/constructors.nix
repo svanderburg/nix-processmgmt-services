@@ -212,4 +212,9 @@ in
     inherit createManagedProcess;
     inherit (pkgs) util-linux;
   };
+
+  zerotierone = import ./zerotierone {
+    inherit createManagedProcess libDir;
+    inherit (pkgs) lib zerotierone;
+  };
 }
